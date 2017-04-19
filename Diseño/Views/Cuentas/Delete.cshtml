@@ -1,0 +1,48 @@
+﻿@model Diseño.Models.Cuenta
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+<h2>Eliminar</h2>
+
+<h3>¿Estás seguro de que querés eliminar esta cuenta?</h3>
+<div>
+    <h4>Cuenta</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Empresa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Empresa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Valor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Valor)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> |
+            @Html.ActionLink("Volver a la lista", "Index")
+        </div>
+    }
+</div>

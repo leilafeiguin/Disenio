@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+}
+
+<div class="jumbotron">
+    <h1>¿Dónde invierto?</h1>
+    <p class="lead">El mejor asesoramiento para realizar inversiones en la Argentina.</p>
+    <p><a href="http://asp.net" class="btn btn-primary btn-lg">¡Empezar! &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Cargar nueva cuenta</h2>
+        <p>
+            Periódicamente (típicamente cada año o cada semestre), las empresas que cotizan 
+            en bolsa generan balances públicos, que hablan del estado la empresa, expresados
+            en cuentas. Existen cientos de cuentas posibles, cada una con su propia fórmula
+            de cálculo. Sin embargo, para el inversionista poco importa calcularlas​, dado
+            que existen bases de datos públicas que ya nos muestran sus valores en cada período.
+        </p>
+        <p><a class="btn btn-default"
+            @Html.ActionLink("Cargar cuenta", "Index", "Cuentas")</a>
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Cargar nuevo indicador</h2>
+        <p>Si bien los datos de cuentas son la base de cualquier análisis, vamos a trabajar en su lugar con
+        información más refinada. Para eso utilizaremos indicadores​, que son cálculos (simples, típicamente
+        sólo algebraicos) sobre las cuentas anteriores, que son útiles para el inversionista pero no siempre son
+        publicados directamente por las compañías.</p>
+        <p>
+            <a class="btn btn-default"
+               @Html.ActionLink("Cargar indicador", "Index", "Cuentas")</a>
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Cargar nueva metodología</h2>
+        <p>los inversionistas, en base a su experiencia y estudio, eligen (o incluso, crean) ciertos
+        indicadores que les resultan significativos, y les imponen ciertas condiciones, que nos dicen si vale la
+        pena invertir en una empresa, o si es mejor invertir en una o en otra. Al conjunto de estos indicadores 
+        y condiciones se los conoce como metodologías (o métodos) de inversión, y son un elemento fundamental 
+        y diferencial de este sistema, dado que nos dan pistas ​sobre dónde invertir (¡y dónde no!)</p>
+        <p>
+            <a class="btn btn-default"
+               @Html.ActionLink("Cargar metodología", "Index", "Cuentas")</a>
+        </p>
+    </div>
+</div>
