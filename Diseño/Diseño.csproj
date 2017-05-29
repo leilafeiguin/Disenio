@@ -161,12 +161,14 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CuentasController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IndicadoresController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Cuenta.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Indicador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -226,6 +228,11 @@
     <Content Include="Views\Cuentas\Details.cshtml" />
     <Content Include="Views\Cuentas\Edit.cshtml" />
     <Content Include="Views\Cuentas\Index.cshtml" />
+    <Content Include="Views\Indicadores\Create.cshtml" />
+    <Content Include="Views\Indicadores\Delete.cshtml" />
+    <Content Include="Views\Indicadores\Details.cshtml" />
+    <Content Include="Views\Indicadores\Edit.cshtml" />
+    <Content Include="Views\Indicadores\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

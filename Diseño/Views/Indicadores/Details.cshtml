@@ -1,0 +1,34 @@
+﻿@model Diseño.Models.Indicador
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>Detalles</h2>
+
+<div>
+    <h4>Indicador</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Formula)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Formula)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Volver a la lista", "Index")
+</p>

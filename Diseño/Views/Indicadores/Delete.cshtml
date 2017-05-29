@@ -1,0 +1,40 @@
+﻿@model Diseño.Models.Indicador
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Eliminar</h2>
+
+<h3>¿Estás seguro de que querés eliminar esta cuenta?</h3>
+<div>
+    <h4>Indicador</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Formula)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Formula)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> |
+            @Html.ActionLink("Volver a la lista", "Index")
+        </div>
+    }
+</div>
