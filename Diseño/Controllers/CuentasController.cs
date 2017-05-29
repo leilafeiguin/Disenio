@@ -21,11 +21,7 @@ namespace Diseño.Controllers
         {
             return View(db.Cuentas.ToList());
         }
-        
 
-        /*public ActionResult Index(){
-            return View(new List<Cuenta>());
-        }*/
 
         [HttpPost]
         public ActionResult Index(HttpPostedFileBase postedFile)

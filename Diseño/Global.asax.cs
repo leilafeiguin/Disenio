@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Diseño.DAL;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -12,6 +14,8 @@ namespace Diseño
     {
         protected void Application_Start()
         {
+            DondeInviertoInitializer initializer = new DondeInviertoInitializer();
+            Database.SetInitializer(initializer);
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
