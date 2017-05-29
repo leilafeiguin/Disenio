@@ -7,12 +7,13 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Diseño.Models;
+using Diseño.DAL;
 
 namespace Diseño.Controllers
 {
     public class IndicadoresController : Controller
     {
-        private IndicadorDBContext db = new IndicadorDBContext();
+        private DondeInviertoContext db = new DondeInviertoContext();
 
         // GET: Indicadores
         public ActionResult Index()
@@ -50,6 +51,7 @@ namespace Diseño.Controllers
         {
             if (ModelState.IsValid)
             {
+                indicador.Tipo = "Definido";
                 db.Indicadores.Add(indicador);
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -13,9 +13,4 @@ namespace Diseño.Models
         public DateTime Fecha { get; set; }
         public decimal Valor { get; set; }
     }
-
-    public class CuentaDBContext : DbContext
-    {
-        public DbSet<Cuenta> Cuentas { get; set; }
-    }
 }

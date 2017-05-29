@@ -13,10 +13,6 @@ namespace Diseño.Models
         public int ID { get; set; }
         public string Nombre { get; set; }
         public string Formula { get; set; }
-    }
-
-    public class IndicadorDBContext : DbContext
-    {
-        public DbSet<Indicador> Indicadores { get; set; }
+        public string Tipo { get; set; }
     }
 }

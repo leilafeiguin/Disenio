@@ -4,11 +4,12 @@
     ViewBag.Title = "Indicadores";
 }
 
-<h2>Index</h2>
+<h2>Indicadores predefinidos</h2>
 
 <p>
-    @Html.ActionLink("Crear uno nuevo", "Create")
+    @Html.ActionLink("Crear nuevo indicador", "Create")
 </p>
+
 <table class="table">
     <tr>
         <th>
@@ -20,20 +21,63 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
+        if (item.Tipo == "Predefinido") { 
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Formula)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+        }
+    }
+
+</table>
+
+
+<h2>Indicadores definidos por el usuario</h2>
+
+<p>
+    @Html.ActionLink("Crear nuevo indicador", "Create")
+</p>
+
+<table class="table">
     <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Nombre)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Formula)
-        </td>
-        <td>
-            @Html.ActionLink("Editar", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Detalles", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Eliminar", "Delete", new { id=item.ID })
-        </td>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Formula)
+        </th>
+        <th></th>
     </tr>
-}
+
+    @foreach (var item in Model)
+    {
+        if (item.Tipo == "Definido")
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Formula)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    }
 
 </table>

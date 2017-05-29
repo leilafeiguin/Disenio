@@ -8,12 +8,13 @@ using System.Web;
 using System.Web.Mvc;
 using Diseño.Models;
 using System.IO;
+using Diseño.DAL;
 
 namespace Diseño.Controllers
 {
     public class CuentasController : Controller
     {
-        private CuentaDBContext db = new CuentaDBContext();
+        private DondeInviertoContext db = new DondeInviertoContext();
 
         // GET: Cuentas1
         public ActionResult Index()
@@ -63,23 +64,6 @@ namespace Diseño.Controllers
             }
             return RedirectToAction("Index");
         }
-
-        /*public JsonResult LlamarJson()
-        {
-            var output = ObtenerListaCuentas();
-            return Json(output, JsonRequestBehavior.AllowGet);
-        }
-
-        private List<Cuenta> ObtenerListaCuentas()
-        {
-            List<Cuenta> lCuentas = new List<Cuenta>(){
-            new Cuenta(){ ID = 1, Empresa = "Coto",  Fecha = DateTime.Now, Valor = 300 },
-            new Cuenta(){ ID = 2, Empresa = "Carrefour",  Fecha = DateTime.Now, Valor = 400 },
-            new Cuenta(){ ID = 3, Empresa = "Disco",  Fecha = DateTime.Now, Valor = 200 },
-            new Cuenta(){ ID = 4, Empresa = "Dia",  Fecha = DateTime.Now, Valor = 350 },
-        };
-            return lCuentas;
-        }*/
 
 
         // GET: Cuentas1/Details/5

@@ -19,27 +19,6 @@
         <br />
         <input type="submit" value="Importar" />
     }
-    <!-- @if (Model.Count() > 0)
-     {
-         <hr />
-         <table cellpadding="0" cellspacing="0">
-             <tr>
-                 <th>ID</th>
-                 <th>Empresa</th>
-                 <th>Fecha</th>
-                 <th>Valor</th>
-             </tr>
-             @foreach (Cuenta cuenta in Model)
-             {
-                 <tr>
-                     <td>@cuenta.ID</td>
-                     <td>@cuenta.Empresa</td>
-                     <td>@cuenta.Fecha</td>
-                     <td>@cuenta.Valor</td>
-                 </tr>
-             }
-         </table>
-     }-->
 </body>  
 
 
@@ -77,32 +56,3 @@
 }
 
 </table>
-
-<!--
-<script>
-   function LlamarJsonDelServidor(){
-    $.ajax({
-        type: "POST",
-        traditional: true,
-        async: false,
-        cache: false,
-        url: '@Url.Action("LlamarJson","Home")',
-        context: document.body,
-        data: { },
-        success: function (result) {
-            $("#resultado").html('');
-            for (var i = 0; i < result.length; i++) {
-                $("#resultado").append("<li> "+result[i].ID+ " " + result[i].Empresa + " " + result[i].Fecha + " " + result[i].Valor + " </li>");
-            }
-        },
-        error: function (xhr) {
-            //debugger;
-            console.log(xhr.responseText);
-            alert("Error has occurred..");
-        }
-    });
-}
-</script>
-<input type="button" onclick="LlamarJsonDelServidor();" value="Llamar Json del Server" />
-<div id="resultado"></div>
--->
