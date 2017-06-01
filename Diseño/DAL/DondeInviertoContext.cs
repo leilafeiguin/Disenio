@@ -17,10 +17,12 @@ namespace Diseño.DAL
 
         public DbSet<Cuenta> Cuentas { get; set; }
         public DbSet<Indicador> Indicadores { get; set; }
+        public DbSet<Empresa> Empresas { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }
+
     }
 }

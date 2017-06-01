@@ -49,7 +49,7 @@ namespace Diseño.Controllers
                             Cuenta cuenta = new Cuenta();
                             db.Entry(cuenta).State = EntityState.Modified;
                             
-                            cuenta.Empresa = row.Split(',')[1];
+                            cuenta.IdEmpresa = Convert.ToInt32(row.Split(',')[1]);
                             cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
                             cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
                             db.Cuentas.Add(cuenta);
@@ -88,7 +88,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Empresa,Fecha,Valor")] Cuenta cuenta)
+        public ActionResult Create([Bind(Include = "ID,IdEmpresa,Fecha,Valor")] Cuenta cuenta)
         {
             if (ModelState.IsValid)
             {
@@ -120,7 +120,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Empresa,Fecha,Valor")] Cuenta cuenta)
+        public ActionResult Edit([Bind(Include = "ID,IdEmpresa,Fecha,Valor")] Cuenta cuenta)
         {
             if (ModelState.IsValid)
             {

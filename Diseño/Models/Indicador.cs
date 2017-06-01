@@ -11,7 +11,10 @@ namespace Diseño.Models
     public class Indicador
     {
         public int ID { get; set; }
+        [Required(ErrorMessage="El campo Nombre es obligatorio.")]
+        [StringLength(50, ErrorMessage = "El nombre no puede tener mas de 50 caracteres.")]
         public string Nombre { get; set; }
+        [Required(ErrorMessage = "El campo Formula es obligatorio.")]
         public string Formula { get; set; }
         public string Tipo { get; set; }
     }
