@@ -33,7 +33,10 @@ namespace Diseño.DAL
             new Empresa{ID=2, Nombre="Porracin", Cuentas=cuentas},
             new Empresa{ID=3, Nombre="Erratchu", Cuentas=cuentas}
             };
-            empresas.ForEach(s => context.Empresas.Add(s));
+           foreach (var item in empresas) {
+               context.Empresas.Add(item);
+            }
+            //empresas.ForEach(s => context.Empresas.Add(s));
             context.SaveChanges();
         }
     }
