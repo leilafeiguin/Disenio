@@ -1,6 +1,7 @@
 ﻿@using Diseño.Models
 @model IEnumerable<Diseño.Models.Cuenta>
 
+
 @{
     ViewBag.Title = "Cuentas";
 }
@@ -21,6 +22,16 @@
     }
 </body>  
 
+<br/>
+
+<select class="select">
+    @foreach (var item in Model)
+    {
+        <option>@Html.DisplayFor(model => item.IdEmpresa)</option> //Deberia ser el nombre de la empresa
+        
+    }
+    
+</select>
 
 <table class="table">
     <tr>
@@ -34,25 +45,25 @@
             @Html.DisplayNameFor(model => model.Valor)
         </th>
         <th></th>
-    </tr>
+        </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.IdEmpresa)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Fecha)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Valor)
-        </td>
-        <td>
-            @Html.ActionLink("Editar", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Detalles", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Eliminar", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
-
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdEmpresa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+            </td>
+            </tr>
+                          }
 </table>

@@ -20,6 +20,8 @@ namespace Diseño.Controllers
         public ActionResult Index()
         {
             return View(db.Cuentas.ToList());
+            /*var empresas = db.Empresas.Include(c => c.Cuentas);
+            return View(empresas.ToList());*/
         }
 
 

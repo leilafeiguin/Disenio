@@ -36,6 +36,7 @@ namespace Diseño.DAL
            foreach (var item in empresas) {
                context.Empresas.Add(item);
             }
+
             //empresas.ForEach(s => context.Empresas.Add(s));
             context.SaveChanges();
         }
