@@ -22,21 +22,25 @@
     }
 </body>  
 
-<br/>
+<br/><br />
 
-<select class="select">
-    @foreach (var item in Model)
+<h3>Elegir empresa</h3>
+    @using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <option>@Html.DisplayFor(model => item.IdEmpresa)</option> //Deberia ser el nombre de la empresa
-        
-    }
-    
-</select>
+        <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
+            @foreach (var item in Model)
+            {
+                <option>@Html.DisplayFor(model => item.Empresa)</option>
+            }
+        </select>
+      <input type="submit" value="Seleccionar"/>
+    }    
+
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.IdEmpresa)
+            @Html.DisplayNameFor(model => model.Empresa)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Fecha)
@@ -51,7 +55,7 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.IdEmpresa)
+                @Html.DisplayFor(modelItem => item.Empresa)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Fecha)

@@ -18,7 +18,6 @@ namespace Diseño.Controllers
         // GET: Empresas
         public ActionResult Index()
         {
-            var empresas = db.Empresas.Include(c => c.Cuentas);
             return View(db.Empresas.ToList());
         }
 

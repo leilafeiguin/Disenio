@@ -12,9 +12,9 @@ namespace Diseño.DAL
         {
             var cuentas = new List<Cuenta>
             {
-            new Cuenta{IdEmpresa=1, Fecha=DateTime.Parse("2005-09-01"), Valor=1000},
-            new Cuenta{IdEmpresa=2, Fecha=DateTime.Parse("2005-09-02"), Valor=500},
-            new Cuenta{IdEmpresa=3, Fecha=DateTime.Parse("2005-09-03"), Valor=0},        
+            new Cuenta{Empresa="Feiguin", Fecha=DateTime.Parse("2005-09-01"), Valor=1000},
+            new Cuenta{Empresa="Porracin", Fecha=DateTime.Parse("2005-09-02"), Valor=500},
+            new Cuenta{Empresa="Erratchu", Fecha=DateTime.Parse("2005-09-03"), Valor=0},        
             };
             cuentas.ForEach(s => context.Cuentas.Add(s));
             context.SaveChanges();
@@ -29,9 +29,9 @@ namespace Diseño.DAL
 
             var empresas = new List<Empresa>
             {
-            new Empresa{ID=1, Nombre="Feiguin", Cuentas=cuentas},
-            new Empresa{ID=2, Nombre="Porracin", Cuentas=cuentas},
-            new Empresa{ID=3, Nombre="Erratchu", Cuentas=cuentas}
+            new Empresa{ID=1, Nombre="Feiguin"},
+            new Empresa{ID=2, Nombre="Porracin"},
+            new Empresa{ID=3, Nombre="Erratchu"}
             };
            foreach (var item in empresas) {
                context.Empresas.Add(item);

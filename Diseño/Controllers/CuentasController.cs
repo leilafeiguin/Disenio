@@ -20,13 +20,11 @@ namespace Diseño.Controllers
         public ActionResult Index()
         {
             return View(db.Cuentas.ToList());
-            /*var empresas = db.Empresas.Include(c => c.Cuentas);
-            return View(empresas.ToList());*/
         }
 
 
         [HttpPost]
-        public ActionResult Index(HttpPostedFileBase postedFile)
+        public ActionResult Index(HttpPostedFileBase postedFile, string EmpresaSeleccionada)
         {
             List<Cuenta> cuentas = new List<Cuenta>();
             string filePath = string.Empty;
@@ -51,14 +49,23 @@ namespace Diseño.Controllers
                             Cuenta cuenta = new Cuenta();
                             db.Entry(cuenta).State = EntityState.Modified;
                             
-                            cuenta.IdEmpresa = Convert.ToInt32(row.Split(',')[1]);
+                            cuenta.Empresa = row.Split(',')[1];
                             cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
                             cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
                             db.Cuentas.Add(cuenta);
                             db.SaveChanges();
                         }
                     }
-                }
+                }               
+            }
+            if (EmpresaSeleccionada != null)
+            {
+                List<Cuenta> cuentasSeleccion = new List<Cuenta>();
+                cuentasSeleccion = db.Cuentas
+                        .Where(c => c.Empresa == EmpresaSeleccionada)
+                      .ToList();
+
+                return View(cuentasSeleccion);
             }
             return RedirectToAction("Index");
         }
@@ -90,7 +97,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,IdEmpresa,Fecha,Valor")] Cuenta cuenta)
+        public ActionResult Create([Bind(Include = "ID,Empresa,Fecha,Valor")] Cuenta cuenta)
         {
             if (ModelState.IsValid)
             {
@@ -122,7 +129,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,IdEmpresa,Fecha,Valor")] Cuenta cuenta)
+        public ActionResult Edit([Bind(Include = "ID,Empresa,Fecha,Valor")] Cuenta cuenta)
         {
             if (ModelState.IsValid)
             {

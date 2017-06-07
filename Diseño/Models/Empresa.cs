@@ -9,6 +9,5 @@ namespace Diseño.Models
     {
         public int ID { get; set; }
         public string Nombre { get; set; }
-        public virtual ICollection<Cuenta> Cuentas { get; set; }
     }
 }
