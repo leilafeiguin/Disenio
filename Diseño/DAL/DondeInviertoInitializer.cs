@@ -14,7 +14,9 @@ namespace Diseño.DAL
             {
             new Cuenta{Empresa="Feiguin", Fecha=DateTime.Parse("2005-09-01"), Valor=1000},
             new Cuenta{Empresa="Porracin", Fecha=DateTime.Parse("2005-09-02"), Valor=500},
-            new Cuenta{Empresa="Erratchu", Fecha=DateTime.Parse("2005-09-03"), Valor=0},        
+            new Cuenta{Empresa="Erratchu", Fecha=DateTime.Parse("2005-09-03"), Valor=0}, 
+            new Cuenta{Empresa="Rochlin", Fecha=DateTime.Parse("2005-09-04"), Valor=1500}, 
+       
             };
             cuentas.ForEach(s => context.Cuentas.Add(s));
             context.SaveChanges();
