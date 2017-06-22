@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Diseño.Models;
 using Diseño.DAL;
+using System.Text.RegularExpressions;
 
 namespace Diseño.Controllers
 {
@@ -49,14 +50,22 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            if (ModelState.IsValid)
+            Match match = Regex.Match(indicador.Formula, @"({[a-zA-Z]+}|[0-9]+)\+(SUM|RES|MUL|DIV)\+({[a-zA-Z]+}|[0-9]+)");
+            if (match.Success)
             {
-                indicador.Tipo = "Definido";
-                db.Indicadores.Add(indicador);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    indicador.Tipo = "Definido";
+                    db.Indicadores.Add(indicador);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
-
+            else
+            {
+                // Devolver mensaje de error, expresion no valida
+                TempData[""] = "La expresion ingresada no es valida";
+            }
             return View(indicador);
         }
 
@@ -82,11 +91,20 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            if (ModelState.IsValid)
+            Match match = Regex.Match(indicador.Formula, @"({[a-zA-Z]+}|[0-9]+)\+(SUM|RES|MUL|DIV)\+({[a-zA-Z]+}|[0-9]+)");
+            if (match.Success)
             {
-                db.Entry(indicador).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Entry(indicador).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                // Devolver mensaje de error, expresion no valida
+                TempData[""] = "La expresion ingresada no es valida";
             }
             return View(indicador);
         }
