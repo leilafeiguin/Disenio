@@ -14,6 +14,13 @@
     <div class="form-horizontal">
         <h4>Indicador</h4>
         <hr />
+        <p>
+            La fórmula debe tener el siguiente formato: <br>
+            Los indicadores deben ser ingresados entre llaves. Ejemplo: {Ingreso Bruto} <br>
+            Los operadores con las primeras tres letras y en mayúscula, es decir, SUM, RES, MUL o DIV.<br>
+            Los operadores entre símbolos '+' y las primeras tres letras en mayúscula. Ejemplo: 1+SUM+2
+        </p>
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -37,6 +44,7 @@
             </div>
         </div>
     </div>
+    @Html.Raw(TempData["msgExpresionNoValida"])
 }
 
 <div>

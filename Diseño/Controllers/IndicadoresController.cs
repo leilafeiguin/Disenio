@@ -64,7 +64,8 @@ namespace Diseño.Controllers
             else
             {
                 // Devolver mensaje de error, expresion no valida
-                TempData[""] = "La expresion ingresada no es valida";
+                TempData["msgExpresionNoValida"] = "<script>alert('La expresion de la fórmula no es valida. Por favor ingresela de nuevo.');</script>";
+
             }
             return View(indicador);
         }
@@ -96,6 +97,7 @@ namespace Diseño.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    indicador.Tipo = "Definido";
                     db.Entry(indicador).State = EntityState.Modified;
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -104,7 +106,7 @@ namespace Diseño.Controllers
             else
             {
                 // Devolver mensaje de error, expresion no valida
-                TempData[""] = "La expresion ingresada no es valida";
+                TempData["msgExpresionNoValida"] = "<script>alert('La expresion no es valida. Por favor ingresela de nuevo.');</script>";
             }
             return View(indicador);
         }
