@@ -60,12 +60,12 @@ namespace Diseño.Controllers
             }
             if (EmpresaSeleccionada != null)
             {
-                List<Cuenta> cuentasSeleccion = new List<Cuenta>();
-                cuentasSeleccion = db.Cuentas
+                cuentas = db.Cuentas.ToList();
+                cuentas = db.Cuentas
                         .Where(c => c.Empresa == EmpresaSeleccionada)
                       .ToList();
 
-                return View(cuentasSeleccion);
+                return View(cuentas);
             }
             return RedirectToAction("Index");
         }

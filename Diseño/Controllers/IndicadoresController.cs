@@ -50,8 +50,8 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            Match match = Regex.Match(indicador.Formula, @"({[a-zA-Z]+}|[0-9]+)\+(SUM|RES|MUL|DIV)\+({[a-zA-Z]+}|[0-9]+)");
-            if (match.Success)
+            Match match = Regex.Match(indicador.Formula, @"({.*}|[0-9]+)\+(SUM|RES|MUL|DIV)\+({.*}|[0-9]+)");
+            if (match.Success  && ValidarTextoIndicador(indicador.Formula))
             {
                 if (ModelState.IsValid)
                 {
@@ -69,6 +69,40 @@ namespace Diseño.Controllers
             }
             return View(indicador);
         }
+
+        public string GetSubstringByString(string a, string b, string c)
+        {
+            return c.Substring((c.IndexOf(a) + a.Length), (c.IndexOf(b) - c.IndexOf(a) - a.Length));
+        }
+
+        public bool ValidarTextoIndicador(string formula)
+        {
+            if (formula.Contains('{') && formula.Contains('}'))
+            {
+                string IndicadorEnIndicador = GetSubstringByString("{", "}", formula);
+
+                List<Indicador> indicadores = new List<Indicador>();
+                indicadores = db.Indicadores.ToList();
+
+                foreach (Indicador i in indicadores)
+                {
+                    if (i.Nombre.Equals(IndicadorEnIndicador))
+                    {
+                        return true;
+                    }
+                }
+
+                if (IndicadorEnIndicador == "ValorCuenta") {
+                    return true;
+                }
+                
+            }else{
+                return true;
+            }
+            return false;
+        }
+
+       
 
         // GET: Indicadores/Edit/5
         public ActionResult Edit(int? id)
