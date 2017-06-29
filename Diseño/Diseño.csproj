@@ -175,6 +175,7 @@
     <Compile Include="Models\Empresa.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Indicador.cs" />
+    <Compile Include="Models\IndicadorCuenta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

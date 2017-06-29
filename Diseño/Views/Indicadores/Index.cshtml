@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Diseño.Models.Indicador>
+﻿@model Diseño.Models.IndicadorCuenta
 
 @{
     ViewBag.Title = "Indicadores";
@@ -9,16 +9,17 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Nombre)
+        Nombre
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Formula)
+            Formula
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
-    {
+    
+    @foreach (var item in Model.Indicadores)
+    {     
         if (item.Tipo == "Predefinido") { 
         <tr>
             <td>
@@ -48,15 +49,15 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Nombre)
+     Nombre
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Formula)
+           Formula
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.Indicadores)
     {
         if (item.Tipo == "Definido")
         {
@@ -77,3 +78,17 @@
     }
 
 </table>
+
+<h2>Indicadores evaluados con cuentas</h2>
+
+Elegir cuenta
+@using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
+        @foreach (var item in Model.Cuentas)
+        {
+            <option>@Html.DisplayFor(model => item.Empresa)</option>
+        }
+    </select>
+    <input type="submit" value="Seleccionar" />
+}    

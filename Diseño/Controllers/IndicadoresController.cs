@@ -19,7 +19,11 @@ namespace Diseño.Controllers
         // GET: Indicadores
         public ActionResult Index()
         {
-            return View(db.Indicadores.ToList());
+            IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
+            indicadorCuenta.Indicadores = db.Indicadores.ToList();
+            indicadorCuenta.Cuentas = db.Cuentas.ToList();
+
+            return View(indicadorCuenta);
         }
 
         // GET: Indicadores/Details/5
@@ -50,7 +54,7 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            Match match = Regex.Match(indicador.Formula, @"({.*}|[0-9]+)\+(SUM|RES|MUL|DIV)\+({.*}|[0-9]+)");
+            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)");
             if (match.Success  && ValidarTextoIndicador(indicador.Formula))
             {
                 if (ModelState.IsValid)
@@ -126,8 +130,8 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            Match match = Regex.Match(indicador.Formula, @"({[a-zA-Z]+}|[0-9]+)\+(SUM|RES|MUL|DIV)\+({[a-zA-Z]+}|[0-9]+)");
-            if (match.Success)
+            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)");
+            if (match.Success && ValidarTextoIndicador(indicador.Formula))
             {
                 if (ModelState.IsValid)
                 {
@@ -178,6 +182,15 @@ namespace Diseño.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ViewResult CategoryChosen(string MovieType)
+        {
+
+            ViewBag.messageString = MovieType;
+
+            return View("Information");
+
         }
     }
 }
