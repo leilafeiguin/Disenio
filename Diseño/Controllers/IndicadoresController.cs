@@ -49,18 +49,52 @@ namespace Diseño.Controllers
                       .ToList();                
             }
 
-            // Agregar proceso de parseo de FormulaIndicadorSeleccionado
-            string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
-
-            for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {                
-                // {ValorCuenta}--> ValorCuentaSeleccionada
-
+            for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {
+                decimal[] Parametros = {0,0};
                 decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
+                char Operador = '+';
+                string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
+                if (FormulaIndicadorSeleccionado.Contains('+'))
+                {
+                    Operador = '+';
+                }
+                else if (FormulaIndicadorSeleccionado.Contains('-')) {
+                    Operador = '-';
+                }
+                else if (FormulaIndicadorSeleccionado.Contains('*'))
+                {
+                    Operador = '*';
 
-                // Hardcodeo en 10 para que vean en donde y como asignar el valor real.
-                indicadorCuenta.Cuentas[i].ValorEnIndicador = 10;
+                }
+                else if (FormulaIndicadorSeleccionado.Contains('/'))
+                {
+                    Operador = '/';
+                }
 
+                char[] OperadorChar = {Operador};
+                string [] CosasSeparadas = FormulaIndicadorSeleccionado.Split(OperadorChar);
+                CosasSeparadas[0] = CosasSeparadas[0].Remove(CosasSeparadas[0].Length - 1);
+                CosasSeparadas[1] = CosasSeparadas[1].Remove(0,1);
+
+                for (int j = 0; j <= 1; j++)
+                {
+                    if (CosasSeparadas[j].Contains('{') && CosasSeparadas[j].Contains('}'))
+                    {
+                        string IndicadorEnIndicador = GetSubstringByString("{", "}", CosasSeparadas[j]);
+                        if (IndicadorEnIndicador == "ValorCuenta")
+                        {
+                            Parametros[j] = ValorCuentaSeleccionada;
+                        }
+                        else {//OTRO INDICADOR 
+                            Parametros[j] = 0;
+                        }
+                    }else{
+                        Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
+                    }
+                }
+                indicadorCuenta.Cuentas[i].ValorEnIndicador = AplicarFormula(Operador, Parametros[0], Parametros[1]);
             }
+            
 
             if (IndicadorSeleccionado != null || EmpresaSeleccionada != null)
             {
@@ -68,6 +102,32 @@ namespace Diseño.Controllers
             }
             return RedirectToAction("Index");
         }
+
+
+
+
+        public decimal AplicarFormula(char Operacion, decimal Parametro1, decimal Parametro2)
+        {
+            switch (Operacion) { 
+                case '+':
+                    return Parametro1 + Parametro2;
+                    break;
+
+                case '-':
+                    return Parametro1 - Parametro2;
+                    break;
+
+                case '*':
+                    return Parametro1 * Parametro2;
+                    break;
+
+                case '/':
+                    return Parametro1 / Parametro2;
+                    break;                    
+            }
+            return 0;
+        }
+
 
         // GET: Indicadores/Details/5
         public ActionResult Details(int? id)
