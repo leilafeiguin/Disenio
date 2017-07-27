@@ -49,12 +49,11 @@ namespace Diseño.Controllers
                       .ToList();                
             }
 
-            // ASIGNAR EL VALOR CORRESPONDIENTE A indicadorCuenta.Cuentas[i].ValorEnIndicador
+            // Agregar proceso de parseo de FormulaIndicadorSeleccionado
             string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
 
             for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {                
-                // Agregar proceso de parseo de FormulaIndicadorSeleccionado poniendo en {ValorCuenta}--> ValorCuentaSeleccionada
-                // Y asignarle ese valor a indicadorCuenta.Cuentas[i].ValorEnIndicador
+                // {ValorCuenta}--> ValorCuentaSeleccionada
 
                 decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
 
