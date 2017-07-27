@@ -26,6 +26,50 @@ namespace Diseño.Controllers
             return View(indicadorCuenta);
         }
 
+        [HttpPost]
+        public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado)
+        {
+            IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
+            indicadorCuenta.Indicadores = db.Indicadores.ToList();
+            indicadorCuenta.Cuentas = db.Cuentas.ToList();          
+            
+            if (EmpresaSeleccionada != null)
+            {
+                indicadorCuenta.Cuentas = db.Cuentas.ToList();
+                indicadorCuenta.Cuentas = db.Cuentas
+                        .Where(c => c.Empresa == EmpresaSeleccionada)
+                      .ToList();
+            }
+
+            if (IndicadorSeleccionado != null)
+            {
+                indicadorCuenta.Indicadores = db.Indicadores.ToList();
+                indicadorCuenta.Indicadores = db.Indicadores
+                        .Where(c => c.Nombre == IndicadorSeleccionado)
+                      .ToList();                
+            }
+
+            // ASIGNAR EL VALOR CORRESPONDIENTE A indicadorCuenta.Cuentas[i].ValorEnIndicador
+            string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
+
+            for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {                
+                // Agregar proceso de parseo de FormulaIndicadorSeleccionado poniendo en {ValorCuenta}--> ValorCuentaSeleccionada
+                // Y asignarle ese valor a indicadorCuenta.Cuentas[i].ValorEnIndicador
+
+                decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
+
+                // Hardcodeo en 10 para que vean en donde y como asignar el valor real.
+                indicadorCuenta.Cuentas[i].ValorEnIndicador = 10;
+
+            }
+
+            if (IndicadorSeleccionado != null || EmpresaSeleccionada != null)
+            {
+                return View(indicadorCuenta);
+            }
+            return RedirectToAction("Index");
+        }
+
         // GET: Indicadores/Details/5
         public ActionResult Details(int? id)
         {
