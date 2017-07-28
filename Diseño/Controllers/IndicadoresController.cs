@@ -50,53 +50,59 @@ namespace Diseño.Controllers
             }
 
             for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {
-                decimal[] Parametros = {0,0};
+                //decimal[] Parametros = {0,0};
+                //decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
+                //char Operador = '+';
+                //string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
+                //if (FormulaIndicadorSeleccionado.Contains('+'))
+                //{
+                //    Operador = '+';
+                //}
+                //else if (FormulaIndicadorSeleccionado.Contains('-')) {
+                //    Operador = '-';
+                //}
+                //else if (FormulaIndicadorSeleccionado.Contains('*'))
+                //{
+                //    Operador = '*';
+
+                //}
+                //else if (FormulaIndicadorSeleccionado.Contains('/'))
+                //{
+                //    Operador = '/';
+                //}
+
+                //char[] OperadorChar = {Operador};
+                //string [] CosasSeparadas = FormulaIndicadorSeleccionado.Split(OperadorChar);
+            //    CosasSeparadas[0] = CosasSeparadas[0].Remove(CosasSeparadas[0].Length - 1);
+            //    CosasSeparadas[1] = CosasSeparadas[1].Remove(0,1);
+
+            //    for (int j = 0; j <= 1; j++)
+            //    {
+            //        if (CosasSeparadas[j].Contains('{') && CosasSeparadas[j].Contains('}'))
+            //        {
+            //            string IndicadorEnIndicador = GetSubstringByString("{", "}", CosasSeparadas[j]);
+            //            if (IndicadorEnIndicador == "ValorCuenta")
+            //            {
+            //                Parametros[j] = ValorCuentaSeleccionada;
+            //            }
+            //            else {//OTRO INDICADOR
+            //                List<Indicador> OtrosIndicadores = db.Indicadores
+            //                        .Where(c => c.Nombre == IndicadorEnIndicador)
+            //                      .ToList();
+            //                string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
+            //                Parametros[j] = EvaluarOtroIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada);
+            //            }
+            //        }else{
+            //            Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
+            //        }
+            //    }
+            //    indicadorCuenta.Cuentas[i].ValorEnIndicador = AplicarFormula(Operador, Parametros[0], Parametros[1]);
+
+
                 decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
-                char Operador = '+';
                 string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
-                if (FormulaIndicadorSeleccionado.Contains('+'))
-                {
-                    Operador = '+';
-                }
-                else if (FormulaIndicadorSeleccionado.Contains('-')) {
-                    Operador = '-';
-                }
-                else if (FormulaIndicadorSeleccionado.Contains('*'))
-                {
-                    Operador = '*';
 
-                }
-                else if (FormulaIndicadorSeleccionado.Contains('/'))
-                {
-                    Operador = '/';
-                }
-
-                char[] OperadorChar = {Operador};
-                string [] CosasSeparadas = FormulaIndicadorSeleccionado.Split(OperadorChar);
-                CosasSeparadas[0] = CosasSeparadas[0].Remove(CosasSeparadas[0].Length - 1);
-                CosasSeparadas[1] = CosasSeparadas[1].Remove(0,1);
-
-                for (int j = 0; j <= 1; j++)
-                {
-                    if (CosasSeparadas[j].Contains('{') && CosasSeparadas[j].Contains('}'))
-                    {
-                        string IndicadorEnIndicador = GetSubstringByString("{", "}", CosasSeparadas[j]);
-                        if (IndicadorEnIndicador == "ValorCuenta")
-                        {
-                            Parametros[j] = ValorCuentaSeleccionada;
-                        }
-                        else {//OTRO INDICADOR
-                            List<Indicador> OtrosIndicadores = db.Indicadores
-                                    .Where(c => c.Nombre == IndicadorEnIndicador)
-                                  .ToList();
-                            string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
-                            Parametros[j] = EvaluarOtroIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada);
-                        }
-                    }else{
-                        Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
-                    }
-                }
-                indicadorCuenta.Cuentas[i].ValorEnIndicador = AplicarFormula(Operador, Parametros[0], Parametros[1]);
+                indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
             }
             
 
@@ -107,71 +113,185 @@ namespace Diseño.Controllers
             return RedirectToAction("Index");
         }
 
-        public decimal EvaluarOtroIndicador(string formula ,decimal valorCuenta) {
-            decimal[] Parametros = { 0, 0 };
-            char Operador = '+';
-            if(formula.Contains('+')){
-                Operador = '+';
-            }else if(formula.Contains('-')){
-                Operador = '-';
-            }else if(formula.Contains('/')){
-                Operador = '/';
-            }else if (formula.Contains('*')){
-                Operador = '*';
-            }
-            char[] OperadorChar = { Operador };
-            string[] CosasSeparadas = formula.Split(OperadorChar);
-            CosasSeparadas[0] = CosasSeparadas[0].Remove(CosasSeparadas[0].Length - 1);
-            CosasSeparadas[1] = CosasSeparadas[1].Remove(0, 1);
+        public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada){
 
-            for (int j = 0; j <= 1; j++)
+            decimal[] Parametros = { 0, 0 };
+
+
+            string[] formulaSeparada = FormulaIndicadorSeleccionado.Split();
+            char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
+
+            int numParametro = 0;
+            for (int k = 0; k < formulaSeparada.Length; k += 2)
             {
-                if (CosasSeparadas[j].Contains('{') && CosasSeparadas[j].Contains('}'))
+                if (formulaSeparada[k].Contains("{") && formulaSeparada[k].Contains("}"))
                 {
-                    string IndicadorEnIndicador = GetSubstringByString("{", "}", CosasSeparadas[j]);
+                    string IndicadorEnIndicador = formulaSeparada[k].Replace("{", "");
+                    IndicadorEnIndicador = IndicadorEnIndicador.Replace("}", "");
                     if (IndicadorEnIndicador == "ValorCuenta")
                     {
-                        Parametros[j] = valorCuenta;
+                        Parametros[numParametro] = ValorCuentaSeleccionada;
+                        numParametro++;
                     }
                     else
                     {//OTRO INDICADOR
                         List<Indicador> OtrosIndicadores = db.Indicadores
                                 .Where(c => c.Nombre == IndicadorEnIndicador)
-                              .ToList();
+                                .ToList();
                         string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
-                        Parametros[j] = EvaluarOtroIndicador(FormulaOtroIndicador, valorCuenta);
+                        Parametros[numParametro] = evaluarIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada);
+                        numParametro++;
                     }
                 }
                 else
                 {
-                    Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
+                    Parametros[numParametro] = Convert.ToDecimal(formulaSeparada[k]);
+                    numParametro++;
                 }
             }
-            return AplicarFormula(Operador, Parametros[0], Parametros[1]);
-        }
+            int numOperador = 0;
+            for (int k = 1; k < formulaSeparada.Length; k += 2)
+            {
 
+                switch (formulaSeparada[k])
+                {
+                    case ("+"):
+                        Operadores[numOperador] = '+';
+                        numOperador++;
+                        break;
+                    case ("-"):
+                        Operadores[numOperador] = '-';
+                        numOperador++;
+                        break;
+                    case ("*"):
+                        Operadores[numOperador] = '*';
+                        numOperador++;
+                        break;
+                    case ("/"):
+                        Operadores[numOperador] = '/';
+                        numOperador++;
+                        break;
 
-        public decimal AplicarFormula(char Operacion, decimal Parametro1, decimal Parametro2)
-        {
-            switch (Operacion) { 
-                case '+':
-                    return Parametro1 + Parametro2;
-                    break;
-
-                case '-':
-                    return Parametro1 - Parametro2;
-                    break;
-
-                case '*':
-                    return Parametro1 * Parametro2;
-                    break;
-
-                case '/':
-                    return Parametro1 / Parametro2;
-                    break;                    
+                }
             }
-            return 0;
+
+            return AplicarFormula(Operadores, Parametros);
+
         }
+
+
+        public decimal AplicarFormula(char[] Operadores, decimal[] Parametros)
+        {
+            decimal resultado = 0;
+            /*while (tieneMultiplicacionODivision(Operadores)){
+                for (int j = 0; j < Operadores.Length; j++)
+                {
+                    if (Operadores[j] == '*')
+                    {
+                        resultado = (Parametros[j - 1] * Parametros[j + 1]);
+                        
+                        Operadores[j] = 'n';
+                    }
+                    else if (Operadores[j] == '/')
+                    {
+                        resultado += (Parametros[j - 1] / Parametros[j + 1]);
+                        Operadores[j] = 'n';
+                    }
+                }
+            
+            }
+            
+            for (int z = 0; z < Operadores.Length; z++)
+            {
+                if (Operadores[z] == '+')
+                {
+                    resultado += (Parametros[z - 1] + Parametros[z + 1]);
+                    Operadores[z] = 'n';
+                }
+                else if (Operadores[z] == '-')
+                {
+                    resultado += (Parametros[z - 1] - Parametros[z + 1]);
+                    Operadores[z] = 'n';
+                }
+            }*/
+
+            return resultado;
+        }
+
+        bool tieneMultiplicacionODivision(char[] Operadores){
+            if (Operadores.Contains('*') || Operadores.Contains('/'))
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        //public decimal EvaluarOtroIndicador(string formula ,decimal valorCuenta) {
+        //    decimal[] Parametros = { 0, 0 };
+        //    char Operador = '+';
+        //    if(formula.Contains('+')){
+        //        Operador = '+';
+        //    }else if(formula.Contains('-')){
+        //        Operador = '-';
+        //    }else if(formula.Contains('/')){
+        //        Operador = '/';
+        //    }else if (formula.Contains('*')){
+        //        Operador = '*';
+        //    }
+        //    char[] OperadorChar = { Operador };
+        //    string[] CosasSeparadas = formula.Split(OperadorChar);
+        //    CosasSeparadas[0] = CosasSeparadas[0].Remove(CosasSeparadas[0].Length - 1);
+        //    CosasSeparadas[1] = CosasSeparadas[1].Remove(0, 1);
+
+        //    for (int j = 0; j <= 1; j++)
+        //    {
+        //        if (CosasSeparadas[j].Contains('{') && CosasSeparadas[j].Contains('}'))
+        //        {
+        //            string IndicadorEnIndicador = GetSubstringByString("{", "}", CosasSeparadas[j]);
+        //            if (IndicadorEnIndicador == "ValorCuenta")
+        //            {
+        //                Parametros[j] = valorCuenta;
+        //            }
+        //            else
+        //            {//OTRO INDICADOR
+        //                List<Indicador> OtrosIndicadores = db.Indicadores
+        //                        .Where(c => c.Nombre == IndicadorEnIndicador)
+        //                      .ToList();
+        //                string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
+        //                Parametros[j] = EvaluarOtroIndicador(FormulaOtroIndicador, valorCuenta);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
+        //        }
+        //    }
+        //    return AplicarFormula(Operador, Parametros[0], Parametros[1]);
+        //}
+
+
+        //public decimal AplicarFormula(char Operacion, decimal Parametro1, decimal Parametro2)
+        //{
+        //    switch (Operacion) { 
+        //        case '+':
+        //            return Parametro1 + Parametro2;
+        //            break;
+
+        //        case '-':
+        //            return Parametro1 - Parametro2;
+        //            break;
+
+        //        case '*':
+        //            return Parametro1 * Parametro2;
+        //            break;
+
+        //        case '/':
+        //            return Parametro1 / Parametro2;
+        //            break;                    
+        //    }
+        //    return 0;
+        //}
 
 
         // GET: Indicadores/Details/5
@@ -202,7 +322,8 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)");
+            //Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)");
+            Match match = Regex.Match(indicador.Formula, @"({.} |[0-9]+ )(\+|\-|\|\/)( {.}| [0-9]+)(( (\+|\-|\|\/)( {.*}| [0-9]+))+)?");
             if (match.Success  && ValidarTextoIndicador(indicador.Formula))
             {
                 if (ModelState.IsValid)
