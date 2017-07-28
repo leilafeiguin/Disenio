@@ -85,8 +85,12 @@ namespace Diseño.Controllers
                         {
                             Parametros[j] = ValorCuentaSeleccionada;
                         }
-                        else {//OTRO INDICADOR 
-                            Parametros[j] = 0;
+                        else {//OTRO INDICADOR
+                            List<Indicador> OtrosIndicadores = db.Indicadores
+                                    .Where(c => c.Nombre == IndicadorEnIndicador)
+                                  .ToList();
+                            string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
+                            Parametros[j] = EvaluarOtroIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada);
                         }
                     }else{
                         Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
@@ -103,7 +107,44 @@ namespace Diseño.Controllers
             return RedirectToAction("Index");
         }
 
+        public decimal EvaluarOtroIndicador(string formula ,decimal valorCuenta) {
+            decimal[] Parametros = { 0, 0 };
+            char Operador = '+';
+            if(formula.Contains('+')){Operador = '+';
+            }else if(formula.Contains('-')){Operador = '-';
+            }else if(formula.Contains('/')){Operador = '/';
+            }else if (formula.Contains('*')){Operador = '*';
+            }
+            char[] OperadorChar = { Operador };
+            string[] CosasSeparadas = formula.Split(OperadorChar);
+            CosasSeparadas[0] = CosasSeparadas[0].Remove(CosasSeparadas[0].Length - 1);
+            CosasSeparadas[1] = CosasSeparadas[1].Remove(0, 1);
 
+            for (int j = 0; j <= 1; j++)
+            {
+                if (CosasSeparadas[j].Contains('{') && CosasSeparadas[j].Contains('}'))
+                {
+                    string IndicadorEnIndicador = GetSubstringByString("{", "}", CosasSeparadas[j]);
+                    if (IndicadorEnIndicador == "ValorCuenta")
+                    {
+                        Parametros[j] = valorCuenta;
+                    }
+                    else
+                    {//OTRO INDICADOR
+                        List<Indicador> OtrosIndicadores = db.Indicadores
+                                .Where(c => c.Nombre == IndicadorEnIndicador)
+                              .ToList();
+                        string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
+                        Parametros[j] = EvaluarOtroIndicador(FormulaOtroIndicador, valorCuenta);
+                    }
+                }
+                else
+                {
+                    Parametros[j] = Convert.ToDecimal(CosasSeparadas[j]);
+                }
+            }
+            return AplicarFormula(Operador, Parametros[0], Parametros[1]);
+        }
 
 
         public decimal AplicarFormula(char Operacion, decimal Parametro1, decimal Parametro2)
@@ -296,4 +337,6 @@ namespace Diseño.Controllers
 
         }
     }
+
+
 }
