@@ -110,10 +110,14 @@ namespace Diseño.Controllers
         public decimal EvaluarOtroIndicador(string formula ,decimal valorCuenta) {
             decimal[] Parametros = { 0, 0 };
             char Operador = '+';
-            if(formula.Contains('+')){Operador = '+';
-            }else if(formula.Contains('-')){Operador = '-';
-            }else if(formula.Contains('/')){Operador = '/';
-            }else if (formula.Contains('*')){Operador = '*';
+            if(formula.Contains('+')){
+                Operador = '+';
+            }else if(formula.Contains('-')){
+                Operador = '-';
+            }else if(formula.Contains('/')){
+                Operador = '/';
+            }else if (formula.Contains('*')){
+                Operador = '*';
             }
             char[] OperadorChar = { Operador };
             string[] CosasSeparadas = formula.Split(OperadorChar);

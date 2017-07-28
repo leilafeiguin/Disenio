@@ -23,8 +23,8 @@ namespace Diseño.DAL
 
             var indicadores = new List<Indicador>
             {
-            new Indicador{Nombre="Ingreso Neto", Formula="Formula ingreso neto", Tipo="Predefinido"},
-            new Indicador{Nombre="Ingreso Bruto", Formula="Formula ingreso bruto", Tipo="Predefinido"}
+            new Indicador{Nombre="Ingreso Neto", Formula="{ValorCuenta} * 0.9", Tipo="Predefinido"},
+            new Indicador{Nombre="Ingreso Bruto", Formula="{ValorCuenta} * 1", Tipo="Predefinido"}
             };
             indicadores.ForEach(s => context.Indicadores.Add(s));
             context.SaveChanges();
