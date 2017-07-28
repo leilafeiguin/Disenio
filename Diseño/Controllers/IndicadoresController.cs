@@ -54,6 +54,7 @@ namespace Diseño.Controllers
                 //decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
                 //char Operador = '+';
                 //string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
+
                 //if (FormulaIndicadorSeleccionado.Contains('+'))
                 //{
                 //    Operador = '+';
@@ -182,20 +183,21 @@ namespace Diseño.Controllers
 
         public decimal AplicarFormula(char[] Operadores, decimal[] Parametros)
         {
-            decimal resultado = 0;
-            /*while (tieneMultiplicacionODivision(Operadores)){
+
+            while (tieneMultiplicacionODivision(Operadores)){
                 for (int j = 0; j < Operadores.Length; j++)
                 {
                     if (Operadores[j] == '*')
                     {
-                        resultado = (Parametros[j - 1] * Parametros[j + 1]);
-                        
-                        Operadores[j] = 'n';
+                        Parametros[j] = (Parametros[j] * Parametros[j + 1]);
+                        Parametros = Parametros.Where((source, index) => index != j+1).ToArray();
+                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
                     }
                     else if (Operadores[j] == '/')
                     {
-                        resultado += (Parametros[j - 1] / Parametros[j + 1]);
-                        Operadores[j] = 'n';
+                        Parametros[j] = (Parametros[j] / Parametros[j + 1]);
+                        Parametros = Parametros.Where((source, index) => index != j+1).ToArray();
+                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
                     }
                 }
             
@@ -205,17 +207,19 @@ namespace Diseño.Controllers
             {
                 if (Operadores[z] == '+')
                 {
-                    resultado += (Parametros[z - 1] + Parametros[z + 1]);
-                    Operadores[z] = 'n';
+                    Parametros[z] = (Parametros[z] + Parametros[z + 1]);
+                    Parametros = Parametros.Where((source, index) => index != z+1).ToArray();
+                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
                 }
                 else if (Operadores[z] == '-')
                 {
-                    resultado += (Parametros[z - 1] - Parametros[z + 1]);
-                    Operadores[z] = 'n';
+                    Parametros[z] = (Parametros[z] - Parametros[z + 1]);
+                    Parametros = Parametros.Where((source, index) => index != z+1).ToArray();
+                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
                 }
-            }*/
+            }
 
-            return resultado;
+            return Parametros[0];
         }
 
         bool tieneMultiplicacionODivision(char[] Operadores){
@@ -322,9 +326,9 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            //Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)");
-            Match match = Regex.Match(indicador.Formula, @"({.} |[0-9]+ )(\+|\-|\|\/)( {.}| [0-9]+)(( (\+|\-|\|\/)( {.*}| [0-9]+))+)?");
-            if (match.Success  && ValidarTextoIndicador(indicador.Formula))
+            //Evaluar estructurura formula
+            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
+            if (match.Success  && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
                 if (ModelState.IsValid)
                 {
@@ -337,7 +341,7 @@ namespace Diseño.Controllers
             else
             {
                 // Devolver mensaje de error, expresion no valida
-                TempData["msgExpresionNoValida"] = "<script>alert('La expresion de la fórmula no es valida. Por favor ingresela de nuevo.');</script>";
+                TempData["msgExpresionNoValida"] = "<script>alert('La expresion de la fórmula o el nombre no es valida. Por favor ingresela de nuevo.');</script>";
 
             }
             return View(indicador);
@@ -399,13 +403,14 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
         {
-            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)");
-            if (match.Success && ValidarTextoIndicador(indicador.Formula))
+            //Evaluar estructurura formula
+            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
+            if (match.Success && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
                 if (ModelState.IsValid)
                 {
                     indicador.Tipo = "Definido";
-                    db.Entry(indicador).State = EntityState.Modified;
+                    db.Indicadores.Add(indicador);
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -413,7 +418,8 @@ namespace Diseño.Controllers
             else
             {
                 // Devolver mensaje de error, expresion no valida
-                TempData["msgExpresionNoValida"] = "<script>alert('La expresion no es valida. Por favor ingresela de nuevo.');</script>";
+                TempData["msgExpresionNoValida"] = "<script>alert('La expresion de la fórmula o el nombre no es valida. Por favor ingresela de nuevo.');</script>";
+
             }
             return View(indicador);
         }
