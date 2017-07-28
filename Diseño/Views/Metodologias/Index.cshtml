@@ -27,7 +27,7 @@
 					@Html.DisplayFor(modelItem => item.Nombre)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Definicion)
+					@Html.DisplayFor(modelItem => item.Declaracion)
 				</td>
 				<td>
 					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
@@ -67,7 +67,7 @@
 					@Html.DisplayFor(modelItem => item.Nombre)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Definicion)
+					@Html.DisplayFor(modelItem => item.Declaracion)
 				</td>
 				<td>
 					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
@@ -88,14 +88,14 @@ Elegir una o dos empresas
 	<select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
 		@foreach (var item in Model.Cuentas)
 		{
-			<option>@Html.DisplayFor(model => item.Cuenta)</option>
+			<option>@Html.DisplayFor(model => item.Empresa)</option>
 		}
 	</select>
 
 	<select id="EmpresaSeleccionada2" name="EmpresaSeleccionada2">
 		@foreach (var item in Model.Cuentas)
 		{
-			<option>@Html.DisplayFor(model => item.Cuenta)</option>
+			<option>@Html.DisplayFor(model => item.Empresa)</option>
 		}
 	</select>
 
