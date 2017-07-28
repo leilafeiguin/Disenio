@@ -410,7 +410,7 @@ namespace Diseño.Controllers
                 if (ModelState.IsValid)
                 {
                     indicador.Tipo = "Definido";
-                    db.Indicadores.Add(indicador);
+                    db.Entry(indicador).State = EntityState.Modified;
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
