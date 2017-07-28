@@ -18,7 +18,11 @@ namespace Diseño.Controllers
         // GET: Metodologias
         public ActionResult Index()
         {
-            return View(db.Metodologias.ToList());
+            MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
+            metodologiaCuenta.Metodologias = db.Metodologias.ToList();
+            metodologiaCuenta.Cuentas = db.Cuentas.ToList();
+
+            return View(metodologiaCuenta);
         }
 
         // GET: Metodologias/Details/5

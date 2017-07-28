@@ -9,5 +9,7 @@ namespace Diseño.Models
     {
         public int ID { get; set; }
         public string Nombre { get; set; }
+        public string Declaracion { get; set}
+        public string Tipo { get; set; }
     }
 }

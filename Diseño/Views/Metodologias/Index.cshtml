@@ -1,33 +1,114 @@
-﻿@model IEnumerable<Diseño.Models.Metodologia>
+﻿@model Diseño.Models.MetodologiaCuenta
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Metodologias";
 }
 
-<h2>Index</h2>
+<h2>Metodologias predefinidas</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Nombre)
-        </th>
-        <th></th>
-    </tr>
+	<tr>
+		<th>
+			Nombre
+		</th>
+		<th>
+			Definicion
+		</th>
+		<th></th>
+	</tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Nombre)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+
+	@foreach (var item in Model.Metodologias)
+	{
+		if (item.Tipo == "Predefinido")
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Nombre)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Definicion)
+				</td>
+				<td>
+					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+					@Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+					@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+				</td>
+			</tr>
+		}
+	}
 
 </table>
+
+
+<h2>Metodologias definidas por el usuario</h2>
+
+<p>
+	@Html.ActionLink("Crear nueva metodologia", "Create")
+</p>
+
+<table class="table">
+	<tr>
+		<th>
+			Nombre
+		</th>
+		<th>
+			Definicion
+		</th>
+		<th></th>
+	</tr>
+
+	@foreach (var item in Model.Metodologias)
+	{
+		if (item.Tipo == "Definido")
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Nombre)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Definicion)
+				</td>
+				<td>
+					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+					@Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+					@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+				</td>
+			</tr>
+		}
+	}
+
+</table>
+
+<h2>Metodologias evaluadas en empresas</h2>
+
+Elegir una o dos empresas
+@using (Html.BeginForm("Index", "Metodologias", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+	<select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
+		@foreach (var item in Model.Cuentas)
+		{
+			<option>@Html.DisplayFor(model => item.Cuenta)</option>
+		}
+	</select>
+
+	<select id="EmpresaSeleccionada2" name="EmpresaSeleccionada2">
+		@foreach (var item in Model.Cuentas)
+		{
+			<option>@Html.DisplayFor(model => item.Cuenta)</option>
+		}
+	</select>
+
+	<select id="IndicadorSeleccionado" name="IndicadorSeleccionado">
+		@foreach (var item in Model.Metodologias)
+		{
+			<option>@Html.DisplayFor(model => item.Nombre)</option>
+		}
+	</select>
+	<input type="submit" value="Seleccionar" />
+
+
+
+
+}
+
