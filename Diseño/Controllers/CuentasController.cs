@@ -19,7 +19,15 @@ namespace Diseño.Controllers
         // GET: Cuentas1
         public ActionResult Index()
         {
-            return View(db.Cuentas.ToList());
+            List<Cuenta> cuentas = new List<Cuenta>();
+            List<Cuenta> cuentasTodas = new List<Cuenta>();
+            List<Cuenta>[] arrayCuentas = new List<Cuenta>[2];
+
+            cuentasTodas = db.Cuentas.ToList();
+            cuentas = db.Cuentas.ToList(); ;
+            arrayCuentas[0] = cuentasTodas;
+            arrayCuentas[1] = cuentas;
+            return View(arrayCuentas);
         }
 
 
@@ -27,6 +35,8 @@ namespace Diseño.Controllers
         public ActionResult Index(HttpPostedFileBase postedFile, string EmpresaSeleccionada)
         {
             List<Cuenta> cuentas = new List<Cuenta>();
+            List<Cuenta> cuentasTodas = new List<Cuenta>();
+            List<Cuenta>[] arrayCuentas = new List<Cuenta>[2];
             string filePath = string.Empty;
             if (postedFile != null)
             {
@@ -60,12 +70,14 @@ namespace Diseño.Controllers
             }
             if (EmpresaSeleccionada != null)
             {
-                cuentas = db.Cuentas.ToList();
+                cuentasTodas = db.Cuentas.ToList();
                 cuentas = db.Cuentas
                         .Where(c => c.Empresa == EmpresaSeleccionada)
                       .ToList();
+                arrayCuentas[0] = cuentasTodas;
+                arrayCuentas[1] = cuentas;
 
-                return View(cuentas);
+                return View(arrayCuentas);
             }
             return RedirectToAction("Index");
         }

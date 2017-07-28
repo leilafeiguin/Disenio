@@ -1,5 +1,5 @@
 ﻿@using Diseño.Models
-@model IEnumerable<Diseño.Models.Cuenta>
+@model IEnumerable<Diseño.Models.Cuenta>[]
 
 
 @{
@@ -16,7 +16,7 @@
 <body>
     @using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <input type="file" name="postedFile" />
+        <input type="file" name="postedFile" required/>
         <br />
         <input type="submit" value="Importar" />
     }
@@ -28,7 +28,7 @@
     @using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
-            @foreach (var item in Model)
+            @foreach (var item in Model[0])
             {
                 <option>@Html.DisplayFor(model => item.Empresa)</option>
             }
@@ -38,20 +38,21 @@
 
 
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Empresa)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Fecha)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Valor)
-        </th>
-        <th></th>
+        <tr>
+            <th>
+                Empresa
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+               Valor
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
-
-        @foreach (var item in Model)
+        @foreach (var item in Model[1])
         {
         <tr>
             <td>
@@ -68,6 +69,6 @@
                 @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
                 @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
             </td>
-            </tr>
+        </tr>
                           }
 </table>
