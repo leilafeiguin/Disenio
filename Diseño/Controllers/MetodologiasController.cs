@@ -51,10 +51,11 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nombre")] Metodologia metodologia)
+        public ActionResult Create([Bind(Include = "ID,Nombre,Declaracion")] Metodologia metodologia)
         {
             if (ModelState.IsValid)
             {
+                metodologia.Tipo = "Definido";
                 db.Metodologias.Add(metodologia);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -83,10 +84,11 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Nombre")] Metodologia metodologia)
+        public ActionResult Edit([Bind(Include = "ID,Nombre,Declaracion")] Metodologia metodologia)
         {
             if (ModelState.IsValid)
             {
+                metodologia.Tipo = "Definido";
                 db.Entry(metodologia).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
