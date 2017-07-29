@@ -99,7 +99,7 @@ Elegir una o dos empresas
 		}
 	</select>
 
-	<select id="IndicadorSeleccionado" name="IndicadorSeleccionado">
+	<select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
 		@foreach (var item in Model.Metodologias)
 		{
 			<option>@Html.DisplayFor(model => item.Nombre)</option>
@@ -107,6 +107,36 @@ Elegir una o dos empresas
 	</select>
 	<input type="submit" value="Seleccionar" />
 
+    <table class="table">
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Declaracion
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Cuentas)
+        {
+           
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Empresa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                        @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+                    </td>
+                </tr> 
+        }
+
+    </table>
 
 
 

@@ -49,7 +49,14 @@ namespace Diseño.Controllers
                       .ToList();                
             }
 
-            for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {
+            if (IndicadorSeleccionado == "ROE") {
+                decimal ROE = AplicarROE(indicadorCuenta.Cuentas, EmpresaSeleccionada);
+                indicadorCuenta.Cuentas[0].ValorEnIndicador = ROE;
+                return View(indicadorCuenta);
+            }
+
+
+                for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {
                 //decimal[] Parametros = {0,0};
                 //decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
                 //char Operador = '+';
@@ -466,6 +473,17 @@ namespace Diseño.Controllers
 
             return View("Information");
 
+        }
+
+        public static decimal AplicarROE(List<Cuenta> Cuentas, string EmpresaSeleccionada) {
+
+            decimal SumatoriaCuentasEmpresa = 0;
+            for (int i = 0; i < Cuentas.Count; i++)
+            {
+                SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
+            }
+
+            return (Cuentas[Cuentas.Count - 1].Valor / SumatoriaCuentasEmpresa);
         }
     }
 

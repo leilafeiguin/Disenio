@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Diseño.DAL;
 using Diseño.Models;
+using Diseño.Controllers;
 
 namespace Diseño.Controllers
 {
@@ -21,9 +22,33 @@ namespace Diseño.Controllers
             MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
             metodologiaCuenta.Metodologias = db.Metodologias.ToList();
             metodologiaCuenta.Cuentas = db.Cuentas.ToList();
-
+            
             return View(metodologiaCuenta);
         }
+
+        [HttpPost]
+        public ActionResult Index(string EmpresaSeleccionada, string EmpresaSeleccionada2, string MetodologiaSeleccionada) {
+
+            MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
+            metodologiaCuenta.Cuentas = db.Cuentas.ToList();
+            metodologiaCuenta.Metodologias = db.Metodologias.ToList();
+
+            IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
+            indicadorCuenta.Cuentas = db.Cuentas.ToList();
+           
+
+            for (int i = 0; i < metodologiaCuenta.Cuentas.Count; i++) {
+                indicadorCuenta.Cuentas = db.Cuentas
+                    .Where(c => c.Empresa == indicadorCuenta.Cuentas[i].Empresa)
+                    .ToList();
+                string empresa = indicadorCuenta.Cuentas[i].Empresa;
+                metodologiaCuenta.Cuentas[i].ValorEnIndicador = IndicadoresController.AplicarROE(indicadorCuenta.Cuentas, empresa);
+            }
+
+            return View(metodologiaCuenta);
+
+        }
+
 
         // GET: Metodologias/Details/5
         public ActionResult Details(int? id)

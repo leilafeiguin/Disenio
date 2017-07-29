@@ -59,7 +59,7 @@
 
     @foreach (var item in Model.Indicadores)
     {
-        if (item.Tipo == "Definido")
+        if (item.Tipo != "Predefinido")
         {
             <tr>
                 <td>
