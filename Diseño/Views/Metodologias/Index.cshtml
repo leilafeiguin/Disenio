@@ -1,4 +1,4 @@
-﻿@model Diseño.Models.MetodologiaCuenta
+﻿@model Diseño.Models.MetodologiaCuenta[]
 
 @{
     ViewBag.Title = "Metodologias";
@@ -18,7 +18,7 @@
 	</tr>
 
 
-	@foreach (var item in Model.Metodologias)
+	@foreach (var item in Model[0].Metodologias)
 	{
 		if (item.Tipo == "Predefinido")
 		{
@@ -58,7 +58,7 @@
 		<th></th>
 	</tr>
 
-	@foreach (var item in Model.Metodologias)
+	@foreach (var item in Model[0].Metodologias)
 	{
 		if (item.Tipo == "Definido")
 		{
@@ -86,21 +86,21 @@ Elegir una o dos empresas
 @using (Html.BeginForm("Index", "Metodologias", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 	<select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
-		@foreach (var item in Model.Cuentas)
+		@foreach (var item in Model[0].Cuentas)
 		{
 			<option>@Html.DisplayFor(model => item.Empresa)</option>
 		}
 	</select>
 
 	<select id="EmpresaSeleccionada2" name="EmpresaSeleccionada2">
-		@foreach (var item in Model.Cuentas)
+		@foreach (var item in Model[0].Cuentas)
 		{
 			<option>@Html.DisplayFor(model => item.Empresa)</option>
 		}
 	</select>
 
 	<select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
-		@foreach (var item in Model.Metodologias)
+		@foreach (var item in Model[0].Metodologias)
 		{
 			<option>@Html.DisplayFor(model => item.Nombre)</option>
 		}
@@ -113,12 +113,17 @@ Elegir una o dos empresas
                 Nombre
             </th>
             <th>
-                Declaracion
+                Valor
             </th>
-            <th></th>
+            <th>
+                Valor con Indicador
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
 
-        @foreach (var item in Model.Cuentas)
+        @foreach (var item in Model[1].Cuentas)
         {
            
                 <tr>
@@ -127,6 +132,9 @@ Elegir una o dos empresas
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ValorEnIndicador)
                     </td>
                     <td>
                         @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |

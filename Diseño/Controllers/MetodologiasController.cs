@@ -19,34 +19,60 @@ namespace Diseño.Controllers
         // GET: Metodologias
         public ActionResult Index()
         {
+            
+            MetodologiaCuenta[] arrayMetodologiaCuenta = new MetodologiaCuenta[2];
+        
             MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
             metodologiaCuenta.Metodologias = db.Metodologias.ToList();
             metodologiaCuenta.Cuentas = db.Cuentas.ToList();
-            
-            return View(metodologiaCuenta);
+
+           
+            arrayMetodologiaCuenta[0] = metodologiaCuenta;
+            arrayMetodologiaCuenta[1] = metodologiaCuenta;
+
+            return View(arrayMetodologiaCuenta);
         }
 
         [HttpPost]
         public ActionResult Index(string EmpresaSeleccionada, string EmpresaSeleccionada2, string MetodologiaSeleccionada) {
 
             MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
-            metodologiaCuenta.Cuentas = db.Cuentas.ToList();
             metodologiaCuenta.Metodologias = db.Metodologias.ToList();
 
-            IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
-            indicadorCuenta.Cuentas = db.Cuentas.ToList();
-           
+            IndicadorCuenta indicadorCuenta1 = new IndicadorCuenta();
+            indicadorCuenta1.Cuentas = db.Cuentas
+                .Where(c => c.Empresa == EmpresaSeleccionada)
+                .ToList();
+            decimal E1 = IndicadoresController.AplicarROE(indicadorCuenta1.Cuentas, EmpresaSeleccionada);
+            indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
 
-            for (int i = 0; i < metodologiaCuenta.Cuentas.Count; i++) {
-                indicadorCuenta.Cuentas = db.Cuentas
-                    .Where(c => c.Empresa == indicadorCuenta.Cuentas[i].Empresa)
-                    .ToList();
-                string empresa = indicadorCuenta.Cuentas[i].Empresa;
-                metodologiaCuenta.Cuentas[i].ValorEnIndicador = IndicadoresController.AplicarROE(indicadorCuenta.Cuentas, empresa);
+            IndicadorCuenta indicadorCuenta2 = new IndicadorCuenta();
+            indicadorCuenta2.Cuentas = db.Cuentas
+                .Where(c => c.Empresa == EmpresaSeleccionada2)
+                .ToList();
+            decimal E2 = IndicadoresController.AplicarROE(indicadorCuenta2.Cuentas, EmpresaSeleccionada2);
+            indicadorCuenta2.Cuentas[0].ValorEnIndicador = E2;
+
+            if (E1 > E2)
+            {
+                metodologiaCuenta.Cuentas = indicadorCuenta1.Cuentas;
+            }
+            else 
+            {
+                metodologiaCuenta.Cuentas = indicadorCuenta2.Cuentas; 
             }
 
-            return View(metodologiaCuenta);
+            MetodologiaCuenta[] arrayMetodologiaCuenta = new MetodologiaCuenta[2];
 
+            MetodologiaCuenta metodologiaCuentaTotal = new MetodologiaCuenta();
+            metodologiaCuentaTotal.Metodologias = db.Metodologias.ToList();
+            metodologiaCuentaTotal.Cuentas = db.Cuentas.ToList();
+
+
+            arrayMetodologiaCuenta[0] = metodologiaCuentaTotal;
+            arrayMetodologiaCuenta[1] = metodologiaCuenta;
+
+            return View(arrayMetodologiaCuenta);
         }
 
 

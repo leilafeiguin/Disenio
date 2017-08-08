@@ -24,7 +24,7 @@ namespace Diseño.Controllers
             List<Cuenta>[] arrayCuentas = new List<Cuenta>[2];
 
             cuentasTodas = db.Cuentas.ToList();
-            cuentas = db.Cuentas.ToList(); ;
+            cuentas = db.Cuentas.ToList(); 
             arrayCuentas[0] = cuentasTodas;
             arrayCuentas[1] = cuentas;
             return View(arrayCuentas);
