@@ -8,7 +8,7 @@ namespace Diseño.Models
     public class Ingreso
     {
         public int ID { get; set; }
-        public List<Empresa> IdEmpresa { get; set; }
+        public int IdEmpresa { get; set; }
         public int Valor { get; set; }
     }
 }
