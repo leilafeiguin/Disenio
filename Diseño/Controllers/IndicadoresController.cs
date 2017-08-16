@@ -358,7 +358,11 @@ namespace Diseño.Controllers
                 SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
             }
 
+            if (SumatoriaCuentasEmpresa == 0) {
+                return 0;
+            }else { 
             return (Cuentas[Cuentas.Count - 1].Valor / SumatoriaCuentasEmpresa);
+            }
         }
     }
 

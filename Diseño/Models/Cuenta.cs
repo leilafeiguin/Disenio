@@ -16,6 +16,5 @@ namespace Diseño.Models
         public DateTime Fecha { get; set; }
         public decimal Valor { get; set; }
         public decimal ValorEnIndicador { get; set; }
-       // public virtual ICollection<Empresa> Empresas { get; set; }
     }
 }
