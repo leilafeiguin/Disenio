@@ -35,23 +35,24 @@ namespace Diseño.Controllers
 
         [HttpPost]
         public ActionResult Index(string EmpresaSeleccionada, string EmpresaSeleccionada2, string MetodologiaSeleccionada) {
-
+            int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
+            int IDEmpresaSeleccionada2 = Convert.ToInt32(EmpresaSeleccionada2);
             MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
             metodologiaCuenta.Metodologias = db.Metodologias.ToList();
 
             IndicadorCuenta indicadorCuenta1 = new IndicadorCuenta();
             indicadorCuenta1.Cuentas = db.Cuentas
-                .Where(c => c.Empresa == EmpresaSeleccionada)
+                .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
                 .ToList();
             decimal E1 = IndicadoresController.AplicarROE(indicadorCuenta1.Cuentas, EmpresaSeleccionada);
-            indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
+            //indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
 
             IndicadorCuenta indicadorCuenta2 = new IndicadorCuenta();
             indicadorCuenta2.Cuentas = db.Cuentas
-                .Where(c => c.Empresa == EmpresaSeleccionada2)
+                .Where(c => c.IDEmpresa == IDEmpresaSeleccionada2)
                 .ToList();
             decimal E2 = IndicadoresController.AplicarROE(indicadorCuenta2.Cuentas, EmpresaSeleccionada2);
-            indicadorCuenta2.Cuentas[0].ValorEnIndicador = E2;
+            //indicadorCuenta2.Cuentas[0].ValorEnIndicador = E2;
 
             if (E1 > E2)
             {
@@ -102,11 +103,10 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nombre,Declaracion")] Metodologia metodologia)
+        public ActionResult Create([Bind(Include = "ID,Nombre,Formula,Descripcion")] Metodologia metodologia)
         {
             if (ModelState.IsValid)
             {
-                metodologia.Tipo = "Definido";
                 db.Metodologias.Add(metodologia);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -135,11 +135,10 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Nombre,Declaracion")] Metodologia metodologia)
+        public ActionResult Edit([Bind(Include = "ID,Nombre,Formula,Descripcion")] Metodologia metodologia)
         {
             if (ModelState.IsValid)
             {
-                metodologia.Tipo = "Definido";
                 db.Entry(metodologia).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

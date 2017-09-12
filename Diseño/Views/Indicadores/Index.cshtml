@@ -12,7 +12,10 @@
         Nombre
         </th>
         <th>
-            FormulaIndicadores
+        Formula
+        </th>
+        <th>
+            Descripcion
         </th>
         <th></th>
     </tr>
@@ -27,6 +30,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Formula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
@@ -49,10 +55,13 @@
 <table class="table">
     <tr>
         <th>
-     Nombre
+        Nombre
         </th>
         <th>
            Formula
+        </th>
+        <th>
+            Descripcion
         </th>
         <th></th>
     </tr>
@@ -67,6 +76,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Formula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
                 </td>
                 <td>
                     @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
@@ -87,7 +99,7 @@ Elegir cuenta
     <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
         @foreach (var item in Model.Cuentas)
         {
-            <option>@Html.DisplayFor(model => item.Empresa)</option>
+            <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
         }
     </select>
 
@@ -102,6 +114,9 @@ Elegir cuenta
 
     <table class="table">
         <tr>
+            <th>
+                Nombre
+            </th>
             <th>
                 Empresa
             </th>
@@ -121,7 +136,10 @@ Elegir cuenta
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Empresa)
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empresa.Nombre)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Fecha)
@@ -130,7 +148,7 @@ Elegir cuenta
                     @Html.DisplayFor(modelItem => item.Valor)
                 </td>      
                 <td>
-                   @Html.DisplayFor(modelItem => item.ValorEnIndicador)
+                   HACER
                 </td>      
             </tr>
         }

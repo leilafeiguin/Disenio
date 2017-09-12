@@ -4,47 +4,10 @@
     ViewBag.Title = "Metodologias";
 }
 
-<h2>Metodologias predefinidas</h2>
-
-<table class="table">
-	<tr>
-		<th>
-			Nombre
-		</th>
-		<th>
-            Declaracion
-		</th>
-		<th></th>
-	</tr>
-
-
-	@foreach (var item in Model[0].Metodologias)
-	{
-		if (item.Tipo == "Predefinido")
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Nombre)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Declaracion)
-				</td>
-				<td>
-					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
-					@Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
-					@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
-				</td>
-			</tr>
-		}
-	}
-
-</table>
-
-
-<h2>Metodologias definidas por el usuario</h2>
+<h2>Metodologias</h2>
 
 <p>
-	@Html.ActionLink("Crear nueva metodologia", "Create")
+    @Html.ActionLink("Crear nueva metodologia", "Create")
 </p>
 
 <table class="table">
@@ -53,29 +16,33 @@
 			Nombre
 		</th>
 		<th>
-            Declaracion
+            Formula
 		</th>
+        <th>
+            Descripcion
+        </th>
 		<th></th>
 	</tr>
 
+
 	@foreach (var item in Model[0].Metodologias)
-	{
-		if (item.Tipo == "Definido")
-		{
+	{		
 			<tr>
 				<td>
 					@Html.DisplayFor(modelItem => item.Nombre)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Declaracion)
+					@Html.DisplayFor(modelItem => item.Formula)
 				</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
 				<td>
 					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
 					@Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
 					@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
 				</td>
 			</tr>
-		}
 	}
 
 </table>
@@ -87,16 +54,16 @@ Elegir una o dos empresas
 {
 	<select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
 		@foreach (var item in Model[0].Cuentas)
-		{
-			<option>@Html.DisplayFor(model => item.Empresa)</option>
-		}
+        {
+            <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
+        }
 	</select>
 
 	<select id="EmpresaSeleccionada2" name="EmpresaSeleccionada2">
 		@foreach (var item in Model[0].Cuentas)
-		{
-			<option>@Html.DisplayFor(model => item.Empresa)</option>
-		}
+        {
+            <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
+        }
 	</select>
 
 	<select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
@@ -128,13 +95,13 @@ Elegir una o dos empresas
            
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Empresa)
+                        @Html.DisplayFor(modelItem => item.Empresa.Nombre)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Valor)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ValorEnIndicador)
+                       HACER
                     </td>
                     <td>
                         @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |

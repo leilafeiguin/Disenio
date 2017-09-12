@@ -30,7 +30,7 @@
         <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
             @foreach (var item in Model[0])
             {
-                <option>@Html.DisplayFor(model => item.Empresa)</option>
+                <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
             }
         </select>
       <input type="submit" value="Seleccionar"/>
@@ -39,6 +39,9 @@
 
 <table class="table">
         <tr>
+            <th>
+                Nombre
+            </th>
             <th>
                 Empresa
             </th>
@@ -56,7 +59,10 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Empresa)
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Empresa.Nombre)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Fecha)

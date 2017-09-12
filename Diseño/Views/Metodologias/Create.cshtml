@@ -23,10 +23,18 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.Declaracion, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Formula, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Declaracion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Declaracion, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Formula, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Formula, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">

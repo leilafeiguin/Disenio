@@ -10,11 +10,13 @@ namespace Diseño.Models
     public class Cuenta
     {
         public int ID { get; set; }
-        public string Empresa { get; set; }
+        public int IDEmpresa { get; set; }
+        public string Nombre { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { get; set; }
         public decimal Valor { get; set; }
-        public decimal ValorEnIndicador { get; set; }
+
+        public virtual Empresa Empresa { get; set; }
     }
 }

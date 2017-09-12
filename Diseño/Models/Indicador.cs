@@ -16,6 +16,7 @@ namespace Diseño.Models
         public string Nombre { get; set; }
         [Required(ErrorMessage = "El campo Formula es obligatorio.")]
         public string Formula { get; set; }
+        public string Descripcion { get; set; }
         public string Tipo { get; set; }
     }
 }

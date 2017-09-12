@@ -29,15 +29,16 @@ namespace Diseño.Controllers
         [HttpPost]
         public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado)
         {
+            int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
             IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
             indicadorCuenta.Indicadores = db.Indicadores.ToList();
-            indicadorCuenta.Cuentas = db.Cuentas.ToList();          
+            indicadorCuenta.Cuentas = db.Cuentas.ToList();
             
             if (EmpresaSeleccionada != null)
             {
                 indicadorCuenta.Cuentas = db.Cuentas.ToList();
                 indicadorCuenta.Cuentas = db.Cuentas
-                        .Where(c => c.Empresa == EmpresaSeleccionada)
+                        .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
                       .ToList();
             }
 
@@ -51,7 +52,7 @@ namespace Diseño.Controllers
 
             if (IndicadorSeleccionado == "ROE") {
                 decimal ROE = AplicarROE(indicadorCuenta.Cuentas, EmpresaSeleccionada);
-                indicadorCuenta.Cuentas[0].ValorEnIndicador = ROE;
+                //indicadorCuenta.Cuentas[0].ValorEnIndicador = ROE;
                 return View(indicadorCuenta);
             }
 
@@ -59,7 +60,7 @@ namespace Diseño.Controllers
             for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {             
                 decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
                 string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
-                indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
+                //indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
             }
             
 
@@ -206,7 +207,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
+        public ActionResult Create([Bind(Include = "ID,Nombre,Formula,Descripcion,Tipo")] Indicador indicador)
         {
             //Evaluar estructurura formula
             Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
@@ -283,7 +284,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Nombre,Formula")] Indicador indicador)
+        public ActionResult Edit([Bind(Include = "ID,Nombre,Formula,Descripcion,Tipo")] Indicador indicador)
         {
             //Evaluar estructurura formula
             Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");

@@ -178,7 +178,6 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Indicador.cs" />
     <Compile Include="Models\IndicadorCuenta.cs" />
-    <Compile Include="Models\Ingreso.cs" />
     <Compile Include="Models\Metodologia.cs" />
     <Compile Include="Models\MetodologiaCuenta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

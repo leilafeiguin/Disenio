@@ -34,6 +34,7 @@ namespace Diseño.Controllers
         [HttpPost]
         public ActionResult Index(HttpPostedFileBase postedFile, string EmpresaSeleccionada)
         {
+            int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
             List<Cuenta> cuentas = new List<Cuenta>();
             List<Cuenta> cuentasTodas = new List<Cuenta>();
             List<Cuenta>[] arrayCuentas = new List<Cuenta>[2];
@@ -56,12 +57,15 @@ namespace Diseño.Controllers
                     {
                         if (ModelState.IsValid)
                         {
+                            Empresa Empresa = new Empresa();
                             Cuenta cuenta = new Cuenta();
                             db.Entry(cuenta).State = EntityState.Modified;
                             
-                            cuenta.Empresa = row.Split(',')[1];
-                            cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
-                            cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
+                            cuenta.IDEmpresa = Convert.ToInt32(row.Split(',')[1]);
+                            cuenta.Empresa = db.Empresas.Find(cuenta.IDEmpresa);
+                            cuenta.Nombre = row.Split(',')[2];
+                            cuenta.Fecha = Convert.ToDateTime(row.Split(',')[3]);
+                            cuenta.Valor = Convert.ToDecimal(row.Split(',')[4]);
                             db.Cuentas.Add(cuenta);
                             db.SaveChanges();
                         }
@@ -72,7 +76,7 @@ namespace Diseño.Controllers
             {
                 cuentasTodas = db.Cuentas.ToList();
                 cuentas = db.Cuentas
-                        .Where(c => c.Empresa == EmpresaSeleccionada)
+                        .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
                       .ToList();
                 arrayCuentas[0] = cuentasTodas;
                 arrayCuentas[1] = cuentas;
@@ -109,7 +113,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Empresa,Fecha,Valor")] Cuenta cuenta)
+        public ActionResult Create([Bind(Include = "IDEmpresa,Nombre,Fecha,Valor")] Cuenta cuenta)
         {
             if (ModelState.IsValid)
             {
@@ -141,7 +145,7 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Empresa,Fecha,Valor")] Cuenta cuenta)
+        public ActionResult Edit([Bind(Include = "IDEmpresa,Nombre,Fecha,Valor")] Cuenta cuenta)
         {
             if (ModelState.IsValid)
             {

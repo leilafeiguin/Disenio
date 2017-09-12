@@ -8,10 +8,15 @@ namespace Diseño.Models
 {
     public class Empresa
     {
+        public Empresa() {
+            this.Cuentas = new HashSet<Cuenta>();
+        }
         public int ID { get; set; }
         public string Nombre { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { get; set; }
+
+        public virtual ICollection<Cuenta> Cuentas { get; set; }
     }
 }
