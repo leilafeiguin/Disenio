@@ -256,7 +256,6 @@
     <Content Include="Views\Metodologias\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Uploads\" />
     <Folder Include="Views\MetodologiaEmpresa\" />
   </ItemGroup>
