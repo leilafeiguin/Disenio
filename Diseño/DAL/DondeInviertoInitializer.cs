@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Diseño.DAL
 {
-    public class DondeInviertoInitializer : System.Data.Entity. DropCreateDatabaseIfModelChanges<DondeInviertoContext>
+    public class DondeInviertoInitializer : System.Data.Entity.CreateDatabaseIfNotExists<DondeInviertoContext>
     {
         protected override void Seed(DondeInviertoContext context)
         {
