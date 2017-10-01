@@ -11,6 +11,7 @@ using Diseño.Models;
 
 namespace Diseño.Controllers
 {
+
     public class EmpresasController : Controller
     {
         private DondeInviertoContext db = new DondeInviertoContext();
@@ -124,5 +125,17 @@ namespace Diseño.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+        public bool EsValidaEmpresa (Empresa empresa){
+            var valida = true;
+             if(string.IsNullOrWhiteSpace(empresa.Nombre)){
+                valida = false;
+             }
+            return valida;
+        }
     }
+
 }
+
+
