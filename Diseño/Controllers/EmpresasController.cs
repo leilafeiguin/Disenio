@@ -16,6 +16,7 @@ namespace Diseño.Controllers
     {
         private DondeInviertoContext db = new DondeInviertoContext();
 
+
         // GET: Empresas
         public ActionResult Index()
         {
@@ -126,12 +127,13 @@ namespace Diseño.Controllers
             base.Dispose(disposing);
         }
 
-
-        public bool EsValidaEmpresa (Empresa empresa){
+        public bool EsValidaEmpresa(Empresa empresa)
+        {
             var valida = true;
-             if(string.IsNullOrWhiteSpace(empresa.Nombre)){
+            if (string.IsNullOrWhiteSpace(empresa.Nombre))
+            {
                 valida = false;
-             }
+            }
             return valida;
         }
     }

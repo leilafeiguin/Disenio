@@ -1,21 +1,21 @@
-﻿using System;
-using Diseño.Controllers;
-using Diseño.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//using System;
+//using Diseño.Controllers;
+//using Diseño.Models;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTestProject2        bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbm-
-{
-    [TestClass]
-    public class PruebasDiseno
-    {
-        [TestMethod]
-        public void EsValida_EmpresaSinNombre()
-        {
-            var empresa = new Empresa() { Nombre = string.Empty };
+//namespace UnitTestProject2        
+//{
+//    [TestClass]
+//    public class PruebasDiseno
+//    {
+//        [TestMethod]
+//        public void EsValida_EmpresaSinNombre()
+//        {
+//            var empresa = new Empresa() { Nombre = string.Empty };
 
-            var resultado = EmpresasController.EsValidaEmpresa(empresa);
+//            var resultado = EmpresasControllerTest.EsValidaEmpresa(empresa);
 
-            Assert.IsFalse(resultado);
-        }
-    }
-}
+//            Assert.IsFalse(resultado);
+//        }
+//    }
+//}
