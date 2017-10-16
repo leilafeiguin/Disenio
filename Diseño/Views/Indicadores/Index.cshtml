@@ -1,4 +1,5 @@
-﻿@model Diseño.Models.IndicadorCuenta
+﻿@using Diseño.Models
+@model Diseño.Models.IndicadorCuenta[]
 
 @{
     ViewBag.Title = "Indicadores";
@@ -21,7 +22,7 @@
     </tr>
 
     
-    @foreach (var item in Model.Indicadores)
+    @foreach (var item in Model[0].Indicadores)
     {     
         if (item.Tipo == "Predefinido") { 
         <tr>
@@ -66,7 +67,7 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model.Indicadores)
+    @foreach (var item in Model[0].Indicadores)
     {
         if (item.Tipo != "Predefinido")
         {
@@ -97,18 +98,20 @@ Elegir cuenta
 @using (Html.BeginForm("Index", "Indicadores", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
-        @foreach (var item in Model.Cuentas)
+        @foreach (var item in Model[0].Cuentas)
         {
             <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
         }
     </select>
 
     <select id="IndicadorSeleccionado" name="IndicadorSeleccionado">
-        @foreach (var item in Model.Indicadores)
+        @foreach (var item in Model[0].Indicadores)
         {
             <option>@Html.DisplayFor(model => item.Nombre)</option>
         }
     </select>
+    <input type="date" name="FechaInicial" required/>
+    <input type="date" name="FechaFinal" required/>
     <input type="submit" value="Seleccionar" />
  
 
@@ -132,7 +135,7 @@ Elegir cuenta
             <th></th>
         </tr>
 
-        @foreach (var item in Model.Cuentas)
+        @foreach (var item in Model[1].Cuentas)
         {
             <tr>
                 <td>
@@ -153,7 +156,6 @@ Elegir cuenta
             </tr>
         }
     </table>
-
-
+   
 }    
 

@@ -19,41 +19,66 @@ namespace Diseño.Controllers
         // GET: Indicadores
         public ActionResult Index()
         {
+            IndicadorCuenta[] arrayIndicadorCuenta = new IndicadorCuenta[2];
             IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
+            IndicadorCuenta indicadorCuentaModificable = new IndicadorCuenta();
             indicadorCuenta.Indicadores = db.Indicadores.ToList();
             indicadorCuenta.Cuentas = db.Cuentas.ToList();
+            indicadorCuentaModificable.Indicadores = db.Indicadores.ToList();
+            indicadorCuentaModificable.Cuentas = db.Cuentas.ToList();
+            arrayIndicadorCuenta[0] = indicadorCuenta;
+            arrayIndicadorCuenta[1] = indicadorCuentaModificable;
 
-            return View(indicadorCuenta);
+            return View(arrayIndicadorCuenta);
         }
 
         [HttpPost]
-        public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado)
+        public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado, DateTime FechaInicial, DateTime FechaFinal)
         {
             int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
+            IndicadorCuenta[] arrayIndicadorCuenta = new IndicadorCuenta[2];
             IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
+            IndicadorCuenta indicadorCuentaModificable = new IndicadorCuenta();
             indicadorCuenta.Indicadores = db.Indicadores.ToList();
             indicadorCuenta.Cuentas = db.Cuentas.ToList();
-            
+            //indicadorCuentaModificable.Indicadores = db.Indicadores.ToList();
+            //indicadorCuentaModificable.Cuentas = db.Cuentas.ToList();
+            arrayIndicadorCuenta[0] = indicadorCuenta;
+            //arrayIndicadorCuenta[1] = indicadorCuentaModificable;
+            List<Cuenta> cuentasEnFecha = new List<Cuenta>();
+
             if (EmpresaSeleccionada != null)
             {
-                indicadorCuenta.Cuentas = db.Cuentas.ToList();
-                indicadorCuenta.Cuentas = db.Cuentas
+                indicadorCuentaModificable.Cuentas = db.Cuentas.ToList();
+                indicadorCuentaModificable.Cuentas = db.Cuentas
                         .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
                       .ToList();
             }
 
+            if (FechaInicial != null && FechaFinal != null && FechaInicial <= FechaFinal)
+            {
+                foreach (Cuenta cuentaActual in indicadorCuentaModificable.Cuentas)
+                {
+                    if ((cuentaActual.Fecha >= FechaInicial) && (cuentaActual.Fecha <= FechaFinal))
+                    {
+                        cuentasEnFecha.Add(cuentaActual);
+                    }
+                }
+                indicadorCuentaModificable.Cuentas = cuentasEnFecha;
+            }
+
             if (IndicadorSeleccionado != null)
             {
-                indicadorCuenta.Indicadores = db.Indicadores.ToList();
-                indicadorCuenta.Indicadores = db.Indicadores
+                indicadorCuentaModificable.Indicadores = db.Indicadores.ToList();
+                indicadorCuentaModificable.Indicadores = db.Indicadores
                         .Where(c => c.Nombre == IndicadorSeleccionado)
                       .ToList();                
             }
 
             if (IndicadorSeleccionado == "ROE") {
-                decimal ROE = AplicarROE(indicadorCuenta.Cuentas, EmpresaSeleccionada);
+                decimal ROE = AplicarROE(indicadorCuentaModificable.Cuentas, EmpresaSeleccionada);
                 //indicadorCuenta.Cuentas[0].ValorEnIndicador = ROE;
-                return View(indicadorCuenta);
+                //return View(indicadorCuenta);
             }
 
 
@@ -62,11 +87,11 @@ namespace Diseño.Controllers
                 string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
                 //indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
             }
-            
 
+            arrayIndicadorCuenta[1] = indicadorCuentaModificable;
             if (IndicadorSeleccionado != null || EmpresaSeleccionada != null)
             {
-                return View(indicadorCuenta);
+                return View(arrayIndicadorCuenta);
             }
             return RedirectToAction("Index");
         }
