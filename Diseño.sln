@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diseño", "Diseño\Diseño.csproj", "{35AA79D8-B891-457E-8DF1-650E2C154118}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PruebasDiseno", "UnitTestProject1\PruebasDiseno.csproj", "{DAAF2314-F55D-4D2D-8693-47F0A8ECEC92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PruebasDiseno", "UnitTestProject2\PruebasDiseno.csproj", "{F56C675E-EB9D-464E-8CE1-8B75888DC0C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +22,10 @@ Global
 		{DAAF2314-F55D-4D2D-8693-47F0A8ECEC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAAF2314-F55D-4D2D-8693-47F0A8ECEC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAAF2314-F55D-4D2D-8693-47F0A8ECEC92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F56C675E-EB9D-464E-8CE1-8B75888DC0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F56C675E-EB9D-464E-8CE1-8B75888DC0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F56C675E-EB9D-464E-8CE1-8B75888DC0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F56C675E-EB9D-464E-8CE1-8B75888DC0C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
