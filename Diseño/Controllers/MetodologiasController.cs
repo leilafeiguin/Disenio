@@ -16,7 +16,7 @@ namespace Diseño.Controllers
 {
     public class MetodologiasController : Controller
     {
-        private DondeInviertoContext db = new DondeInviertoContext();
+        /*private DondeInviertoContext db = new DondeInviertoContext();
 
         // GET: Metodologias
         public ActionResult Index()
@@ -42,14 +42,14 @@ namespace Diseño.Controllers
             MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
             metodologiaCuenta.Metodologias = db.Metodologias.ToList();
 
-            IndicadorCuenta indicadorCuenta1 = new IndicadorCuenta();
+            IndicadorEmpresa indicadorCuenta1 = new IndicadorEmpresa();
             indicadorCuenta1.Cuentas = db.Cuentas
                 .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
                 .ToList();
             decimal E1 = IndicadoresController.AplicarROE(indicadorCuenta1.Cuentas, EmpresaSeleccionada);
             //indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
 
-            IndicadorCuenta indicadorCuenta2 = new IndicadorCuenta();
+            IndicadorEmpresa indicadorCuenta2 = new IndicadorEmpresa();
             indicadorCuenta2.Cuentas = db.Cuentas
                 .Where(c => c.IDEmpresa == IDEmpresaSeleccionada2)
                 .ToList();
@@ -266,6 +266,6 @@ namespace Diseño.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        }*/
     }
 }

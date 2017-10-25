@@ -1,5 +1,5 @@
 ﻿@using Diseño.Models
-@model Diseño.Models.IndicadorCuenta[]
+@model Diseño.Models.IndicadorEmpresaCuentas
 
 @{
     ViewBag.Title = "Indicadores";
@@ -16,13 +16,13 @@
         Formula
         </th>
         <th>
-            Descripcion
+        Descripcion
         </th>
         <th></th>
     </tr>
 
     
-    @foreach (var item in Model[0].Indicadores)
+    @foreach (var item in Model.IndEmpresas.Indicadores)
     {     
         if (item.Tipo == "Predefinido") { 
         <tr>
@@ -67,7 +67,7 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model[0].Indicadores)
+    @foreach (var item in Model.IndEmpresas.Indicadores)
     {
         if (item.Tipo != "Predefinido")
         {
@@ -98,14 +98,14 @@ Elegir cuenta
 @using (Html.BeginForm("Index", "Indicadores", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
-        @foreach (var item in Model[0].Cuentas)
+        @foreach (var item in Model.IndEmpresas.Empresas)
         {
-            <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
+            <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
         }
     </select>
 
     <select id="IndicadorSeleccionado" name="IndicadorSeleccionado">
-        @foreach (var item in Model[0].Indicadores)
+        @foreach (var item in Model.IndEmpresas.Indicadores)
         {
             <option>@Html.DisplayFor(model => item.Nombre)</option>
         }
@@ -135,25 +135,25 @@ Elegir cuenta
             <th></th>
         </tr>
 
-        @foreach (var item in Model[1].Cuentas)
+        @foreach (var item in Model.Cuentas)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Empresa.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fecha)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Valor)
-                </td>      
-                <td>
-                   HACER
-                </td>      
-            </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Empresa.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                    <td>
+                        HACER
+                    </td>
+                </tr>
         }
     </table>
    

@@ -19,79 +19,71 @@ namespace Diseño.Controllers
         // GET: Indicadores
         public ActionResult Index()
         {
-            IndicadorCuenta[] arrayIndicadorCuenta = new IndicadorCuenta[2];
-            IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
-            IndicadorCuenta indicadorCuentaModificable = new IndicadorCuenta();
-            indicadorCuenta.Indicadores = db.Indicadores.ToList();
-            indicadorCuenta.Cuentas = db.Cuentas.ToList();
-            indicadorCuentaModificable.Indicadores = db.Indicadores.ToList();
-            indicadorCuentaModificable.Cuentas = db.Cuentas.ToList();
-            arrayIndicadorCuenta[0] = indicadorCuenta;
-            arrayIndicadorCuenta[1] = indicadorCuentaModificable;
-
-            return View(arrayIndicadorCuenta);
+            IndicadorEmpresaCuentas todo = new IndicadorEmpresaCuentas();
+            IndicadorEmpresa indicadorEmpresa = new IndicadorEmpresa();
+            indicadorEmpresa.Indicadores = db.Indicadores.ToList();
+            indicadorEmpresa.Empresas = db.Empresas.ToList();
+            todo.IndEmpresas = indicadorEmpresa;
+            todo.Cuentas = db.Cuentas.ToList();
+            return View(todo);
         }
 
         [HttpPost]
         public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado, DateTime FechaInicial, DateTime FechaFinal)
         {
             int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
-            IndicadorCuenta[] arrayIndicadorCuenta = new IndicadorCuenta[2];
-            IndicadorCuenta indicadorCuenta = new IndicadorCuenta();
-            IndicadorCuenta indicadorCuentaModificable = new IndicadorCuenta();
-            indicadorCuenta.Indicadores = db.Indicadores.ToList();
-            indicadorCuenta.Cuentas = db.Cuentas.ToList();
-            //indicadorCuentaModificable.Indicadores = db.Indicadores.ToList();
-            //indicadorCuentaModificable.Cuentas = db.Cuentas.ToList();
-            arrayIndicadorCuenta[0] = indicadorCuenta;
-            //arrayIndicadorCuenta[1] = indicadorCuentaModificable;
+            IndicadorEmpresaCuentas todo = new IndicadorEmpresaCuentas();
+            IndicadorEmpresa indicadorEmpresa = new IndicadorEmpresa();
+            indicadorEmpresa.Indicadores = db.Indicadores.ToList();
+            indicadorEmpresa.Empresas = db.Empresas.ToList();
+            List<Cuenta> cuentasDelaEmpresa = new List<Cuenta>();
             List<Cuenta> cuentasEnFecha = new List<Cuenta>();
 
             if (EmpresaSeleccionada != null)
             {
-                indicadorCuentaModificable.Cuentas = db.Cuentas.ToList();
-                indicadorCuentaModificable.Cuentas = db.Cuentas
+                cuentasDelaEmpresa = db.Cuentas
                         .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
                       .ToList();
             }
 
             if (FechaInicial != null && FechaFinal != null && FechaInicial <= FechaFinal)
             {
-                foreach (Cuenta cuentaActual in indicadorCuentaModificable.Cuentas)
+                foreach (Cuenta cuentaActual in cuentasDelaEmpresa)
                 {
                     if ((cuentaActual.Fecha >= FechaInicial) && (cuentaActual.Fecha <= FechaFinal))
                     {
                         cuentasEnFecha.Add(cuentaActual);
                     }
                 }
-                indicadorCuentaModificable.Cuentas = cuentasEnFecha;
+                todo.Cuentas = cuentasEnFecha;
             }
 
-            if (IndicadorSeleccionado != null)
+           /* if (IndicadorSeleccionado != null)
             {
-                indicadorCuentaModificable.Indicadores = db.Indicadores.ToList();
-                indicadorCuentaModificable.Indicadores = db.Indicadores
+                indicadorEmpresaModificable.Indicadores = db.Indicadores.ToList();
+                indicadorEmpresaModificable.Indicadores = db.Indicadores
                         .Where(c => c.Nombre == IndicadorSeleccionado)
                       .ToList();                
-            }
+            }*/
 
-            if (IndicadorSeleccionado == "ROE") {
-                decimal ROE = AplicarROE(indicadorCuentaModificable.Cuentas, EmpresaSeleccionada);
+            /*if (IndicadorSeleccionado == "ROE") {
+                decimal ROE = AplicarROE(indicadorEmpresaModificable.Cuentas, EmpresaSeleccionada);
                 //indicadorCuenta.Cuentas[0].ValorEnIndicador = ROE;
                 //return View(indicadorCuenta);
-            }
+            }*/
 
 
-            for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {             
+           /* for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {             
                 decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
                 string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
                 //indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
-            }
+            }*/
 
-            arrayIndicadorCuenta[1] = indicadorCuentaModificable;
+           // arrayIndicadorCuenta[1] = indicadorCuentaModificable;
+
             if (IndicadorSeleccionado != null || EmpresaSeleccionada != null)
             {
-                return View(arrayIndicadorCuenta);
+                return View(todo);
             }
             return RedirectToAction("Index");
         }
