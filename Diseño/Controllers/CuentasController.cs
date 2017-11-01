@@ -60,12 +60,16 @@ namespace Diseño.Controllers
                             Empresa Empresa = new Empresa();
                             Cuenta cuenta = new Cuenta();
                             db.Entry(cuenta).State = EntityState.Modified;
-                            
-                            cuenta.IDEmpresa = Convert.ToInt32(row.Split(',')[1]);
-                            cuenta.Empresa = db.Empresas.Find(cuenta.IDEmpresa);
-                            cuenta.Nombre = row.Split(',')[2];
-                            cuenta.Fecha = Convert.ToDateTime(row.Split(',')[3]);
-                            cuenta.Valor = Convert.ToDecimal(row.Split(',')[4]);
+
+                            //cuenta.IDEmpresa = Convert.ToInt32(row.Split(',')[0]);
+                            string NombreEmpresa = row.Split(',')[0];
+                            cuenta.Empresa = db.Empresas.Where(e => e.Nombre == NombreEmpresa).FirstOrDefault();                            
+                            if (cuenta.Empresa == null) {
+                                TempData["msgExpresionNoValida"] = "<script>alert('Empresa inexistente');</script>";                                
+                            }
+                            cuenta.Nombre = row.Split(',')[1];
+                            cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
+                            cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
                             db.Cuentas.Add(cuenta);
                             db.SaveChanges();
                         }
@@ -76,7 +80,7 @@ namespace Diseño.Controllers
             {
                 cuentasTodas = db.Cuentas.ToList();
                 cuentas = db.Cuentas
-                        .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
+                        .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
                       .ToList();
                 arrayCuentas[0] = cuentasTodas;
                 arrayCuentas[1] = cuentas;

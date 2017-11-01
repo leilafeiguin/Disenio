@@ -10,7 +10,6 @@ namespace Diseño.Models
     public class Cuenta
     {
         public int ID { get; set; }
-        public int IDEmpresa { get; set; }
         public string Nombre { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]

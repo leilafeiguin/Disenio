@@ -6,16 +6,16 @@ using System.Web;
 
 namespace Diseño.DAL
 {
-    public class DondeInviertoInitializer : System.Data.Entity.CreateDatabaseIfNotExists<DondeInviertoContext>
+    public class DondeInviertoInitializer : System.Data.Entity.DropCreateDatabaseIfModelChanges<DondeInviertoContext>
     {
         protected override void Seed(DondeInviertoContext context)
         {
             var cuentas = new List<Cuenta>
             {
-            new Cuenta{IDEmpresa=1, Nombre="Cuenta Septiembre1", Fecha=DateTime.Parse("2005-09-01"), Valor=1000, Empresa=new Empresa{ID=1, Nombre="Feiguin", Fecha=DateTime.Parse("2005-09-04")}},
-            new Cuenta{IDEmpresa=2, Nombre="Cuenta Septiembre2", Fecha=DateTime.Parse("2005-09-02"), Valor=500, Empresa= new Empresa{ID=2, Nombre="Porracin", Fecha=DateTime.Parse("2005-09-04")}},
-            new Cuenta{IDEmpresa=3, Nombre="Cuenta Septiembre3", Fecha=DateTime.Parse("2005-09-03"), Valor=0, Empresa=new Empresa{ID=3, Nombre="Erratchu", Fecha=DateTime.Parse("2005-09-04")}}, 
-            new Cuenta{IDEmpresa=1, Nombre="Cuenta Septiembre4", Fecha=DateTime.Parse("2005-09-04"), Valor=1500, Empresa=new Empresa{ID=1, Nombre="Feiguin", Fecha=DateTime.Parse("2005-09-04")}}       
+            new Cuenta{Nombre="Cuenta Septiembre1", Fecha=DateTime.Parse("2005-09-01"), Valor=1000, Empresa=new Empresa{ID=1, Nombre="Feiguin", Fecha=DateTime.Parse("2005-09-04")}},
+            new Cuenta{Nombre="Cuenta Septiembre2", Fecha=DateTime.Parse("2005-09-02"), Valor=500, Empresa= new Empresa{ID=2, Nombre="Porracin", Fecha=DateTime.Parse("2005-09-04")}},
+            new Cuenta{Nombre="Cuenta Septiembre3", Fecha=DateTime.Parse("2005-09-03"), Valor=0, Empresa=new Empresa{ID=3, Nombre="Erratchu", Fecha=DateTime.Parse("2005-09-04")}}, 
+            new Cuenta{Nombre="Cuenta Septiembre4", Fecha=DateTime.Parse("2005-09-04"), Valor=1500, Empresa=new Empresa{ID=1, Nombre="Feiguin", Fecha=DateTime.Parse("2005-09-04")}}       
             };
             cuentas.ForEach(s => context.Cuentas.Add(s));
             context.SaveChanges();

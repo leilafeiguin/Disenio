@@ -29,7 +29,7 @@ namespace Diseño.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado, DateTime FechaInicial, DateTime FechaFinal)
+        public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado, Nullable<DateTime> FechaInicial, Nullable<DateTime> FechaFinal)
         {
             int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
             IndicadorEmpresaCuentas todo = new IndicadorEmpresaCuentas();
@@ -42,7 +42,7 @@ namespace Diseño.Controllers
             if (EmpresaSeleccionada != null)
             {
                 cuentasDelaEmpresa = db.Cuentas
-                        .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
+                        .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
                       .ToList();
             }
 
@@ -56,7 +56,11 @@ namespace Diseño.Controllers
                     }
                 }
                 todo.Cuentas = cuentasEnFecha;
+            }else{
+                todo.Cuentas = db.Cuentas.ToList();
             }
+
+            todo.IndEmpresas = indicadorEmpresa;
 
            /* if (IndicadorSeleccionado != null)
             {
@@ -73,13 +77,13 @@ namespace Diseño.Controllers
             }*/
 
 
-           /* for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {             
-                decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
-                string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
-                //indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
-            }*/
+            /* for (int i = 0; i <= indicadorCuenta.Cuentas.Count - 1; i++) {             
+                 decimal ValorCuentaSeleccionada = indicadorCuenta.Cuentas[i].Valor;
+                 string FormulaIndicadorSeleccionado = indicadorCuenta.Indicadores[0].Formula;
+                 //indicadorCuenta.Cuentas[i].ValorEnIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
+             }*/
 
-           // arrayIndicadorCuenta[1] = indicadorCuentaModificable;
+            // arrayIndicadorCuenta[1] = indicadorCuentaModificable;
 
             if (IndicadorSeleccionado != null || EmpresaSeleccionada != null)
             {
