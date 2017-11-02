@@ -19,23 +19,19 @@ namespace Diseño.Controllers
         // GET: Indicadores
         public ActionResult Index()
         {
-            IndicadorEmpresaCuentas todo = new IndicadorEmpresaCuentas();
-            IndicadorEmpresa indicadorEmpresa = new IndicadorEmpresa();
-            indicadorEmpresa.Indicadores = db.Indicadores.ToList();
-            indicadorEmpresa.Empresas = db.Empresas.ToList();
-            todo.IndEmpresas = indicadorEmpresa;
-            todo.Cuentas = db.Cuentas.ToList();
-            return View(todo);
+            TodasLasClases todas = new TodasLasClases();
+            todas.Indicadores = db.Indicadores.ToList();
+            todas.Empresas = db.Empresas.ToList();
+            todas.Cuentas = db.Cuentas.ToList();
+            return View(todas);
         }
 
         [HttpPost]
         public ActionResult Index(string EmpresaSeleccionada, string IndicadorSeleccionado, Nullable<DateTime> FechaInicial, Nullable<DateTime> FechaFinal)
         {
-            IndicadorEmpresaCuentas todo = new IndicadorEmpresaCuentas();
-            IndicadorEmpresa indicadorEmpresa = new IndicadorEmpresa();
-            indicadorEmpresa.Indicadores = db.Indicadores.ToList();
-            indicadorEmpresa.Empresas = db.Empresas.ToList();
-            todo.IndEmpresas = indicadorEmpresa;
+            TodasLasClases todas = new TodasLasClases();
+            todas.Indicadores = db.Indicadores.ToList();
+            todas.Empresas = db.Empresas.ToList();
 
             //if (EmpresaSeleccionada != null)
             if (EmpresaSeleccionada != "")
@@ -57,15 +53,15 @@ namespace Diseño.Controllers
                             cuentasEnFecha.Add(cuentaActual);
                         }
                     }
-                    todo.Cuentas = cuentasEnFecha;
+                    todas.Cuentas = cuentasEnFecha;
                 }
                 else
                 {
-                    todo.Cuentas = cuentasDelaEmpresa;
+                    todas.Cuentas = cuentasDelaEmpresa;
                 }
             }
             else {
-                todo.Cuentas = db.Cuentas.ToList();
+                todas.Cuentas = db.Cuentas.ToList();
             }
 
             //Aca Evaluo los Indicadores
@@ -75,11 +71,11 @@ namespace Diseño.Controllers
                 indicadorActual = db.Indicadores
                         .Where(c => c.Nombre == IndicadorSeleccionado)
                       .ToList();
-                for (int i = 0; i <= todo.Cuentas.Count - 1; i++)
+                for (int i = 0; i <= todas.Cuentas.Count - 1; i++)
                 {
-                    decimal ValorCuentaSeleccionada = todo.Cuentas[i].Valor;
+                    decimal ValorCuentaSeleccionada = todas.Cuentas[i].Valor;
                     string FormulaIndicadorSeleccionado = indicadorActual[0].Formula;
-                    todo.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
+                    todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
                 }
             }
             /*if (IndicadorSeleccionado == "ROE") {
@@ -88,7 +84,7 @@ namespace Diseño.Controllers
                 //return View(indicadorCuenta);
             }*/
 
-             return View(todo);
+            return View(todas);
             //return RedirectToAction("Index");
         }
 
@@ -372,7 +368,7 @@ namespace Diseño.Controllers
 
         }
 
-        public static decimal AplicarROE(List<Cuenta> Cuentas, string EmpresaSeleccionada) {
+        public static decimal AplicarROE(List<Cuenta> Cuentas) {
 
             decimal SumatoriaCuentasEmpresa = 0;
             for (int i = 0; i < Cuentas.Count; i++)

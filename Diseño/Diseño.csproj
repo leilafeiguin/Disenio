@@ -189,13 +189,10 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Cuenta.cs" />
     <Compile Include="Models\Empresa.cs" />
-    <Compile Include="Models\EmpresaCuentas.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Indicador.cs" />
-    <Compile Include="Models\IndicadorEmpresa.cs" />
-    <Compile Include="Models\IndicadorEmpresaCuentas.cs" />
     <Compile Include="Models\Metodologia.cs" />
-    <Compile Include="Models\MetodologiaCuenta.cs" />
+    <Compile Include="Models\TodasLasClases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

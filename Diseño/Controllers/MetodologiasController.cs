@@ -16,66 +16,65 @@ namespace Diseño.Controllers
 {
     public class MetodologiasController : Controller
     {
-        /*private DondeInviertoContext db = new DondeInviertoContext();
+        private DondeInviertoContext db = new DondeInviertoContext();
 
         // GET: Metodologias
         public ActionResult Index()
         {
-            
-            MetodologiaCuenta[] arrayMetodologiaCuenta = new MetodologiaCuenta[2];
-        
-            MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
-            metodologiaCuenta.Metodologias = db.Metodologias.ToList();
-            metodologiaCuenta.Cuentas = db.Cuentas.ToList();
-
-           
-            arrayMetodologiaCuenta[0] = metodologiaCuenta;
-            arrayMetodologiaCuenta[1] = metodologiaCuenta;
-
-            return View(arrayMetodologiaCuenta);
+            TodasLasClases todas = new TodasLasClases();
+            todas.Metodologias = db.Metodologias.ToList();
+            todas.Empresas = db.Empresas.ToList();
+            todas.Cuentas = db.Cuentas.ToList();
+            return View(todas);
         }
 
         [HttpPost]
-        public ActionResult Index(string EmpresaSeleccionada, string EmpresaSeleccionada2, string MetodologiaSeleccionada) {
-            int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
-            int IDEmpresaSeleccionada2 = Convert.ToInt32(EmpresaSeleccionada2);
-            MetodologiaCuenta metodologiaCuenta = new MetodologiaCuenta();
-            metodologiaCuenta.Metodologias = db.Metodologias.ToList();
+        public ActionResult Index(string EmpresaSeleccionada, string EmpresaSeleccionada2, string MetodologiaSeleccionada) 
+        {
+            TodasLasClases todas = new TodasLasClases();
+            todas.Metodologias = db.Metodologias.ToList();
+            todas.Empresas = db.Empresas.ToList();
 
-            IndicadorEmpresa indicadorCuenta1 = new IndicadorEmpresa();
-            indicadorCuenta1.Cuentas = db.Cuentas
-                .Where(c => c.IDEmpresa == IDEmpresaSeleccionada)
-                .ToList();
-            decimal E1 = IndicadoresController.AplicarROE(indicadorCuenta1.Cuentas, EmpresaSeleccionada);
+            if (EmpresaSeleccionada != "" && EmpresaSeleccionada2 != "" && EmpresaSeleccionada != EmpresaSeleccionada2 && MetodologiaSeleccionada != "")
+            {
+                int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
+                int IDEmpresaSeleccionada2 = Convert.ToInt32(EmpresaSeleccionada2);
+                List<Cuenta> CuentasEmpresa1 = new List<Cuenta>();
+                List<Cuenta> CuentasEmpresa2 = new List<Cuenta>();
+
+                CuentasEmpresa1 = db.Cuentas
+                        .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
+                      .ToList();
+                CuentasEmpresa2 = db.Cuentas
+                        .Where(c => c.Empresa.ID == IDEmpresaSeleccionada2)
+                      .ToList();
+
+                if (MetodologiaSeleccionada == "Maximizar ROE") {
+                    todas.Cuentas = maximizarRoe(CuentasEmpresa1, CuentasEmpresa2);
+                }
+                
+            }else{
+                todas.Cuentas = db.Cuentas.ToList();
+            }
+
+            return View(todas);
+        }
+
+        public List<Cuenta> maximizarRoe(List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
+        {
+            decimal E1 = IndicadoresController.AplicarROE(CuentasEmpresa1);
             //indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
-
-            IndicadorEmpresa indicadorCuenta2 = new IndicadorEmpresa();
-            indicadorCuenta2.Cuentas = db.Cuentas
-                .Where(c => c.IDEmpresa == IDEmpresaSeleccionada2)
-                .ToList();
-            decimal E2 = IndicadoresController.AplicarROE(indicadorCuenta2.Cuentas, EmpresaSeleccionada2);
+            decimal E2 = IndicadoresController.AplicarROE(CuentasEmpresa2);
             //indicadorCuenta2.Cuentas[0].ValorEnIndicador = E2;
 
             if (E1 > E2)
             {
-                metodologiaCuenta.Cuentas = indicadorCuenta1.Cuentas;
+                return CuentasEmpresa1;
             }
-            else 
+            else
             {
-                metodologiaCuenta.Cuentas = indicadorCuenta2.Cuentas; 
+                return CuentasEmpresa2;
             }
-
-            MetodologiaCuenta[] arrayMetodologiaCuenta = new MetodologiaCuenta[2];
-
-            MetodologiaCuenta metodologiaCuentaTotal = new MetodologiaCuenta();
-            metodologiaCuentaTotal.Metodologias = db.Metodologias.ToList();
-            metodologiaCuentaTotal.Cuentas = db.Cuentas.ToList();
-
-
-            arrayMetodologiaCuenta[0] = metodologiaCuentaTotal;
-            arrayMetodologiaCuenta[1] = metodologiaCuenta;
-
-            return View(arrayMetodologiaCuenta);
         }
 
 
@@ -266,6 +265,6 @@ namespace Diseño.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }*/
+        }
     }
 }

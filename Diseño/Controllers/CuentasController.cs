@@ -19,18 +19,18 @@ namespace Diseño.Controllers
         // GET: Cuentas1
         public ActionResult Index()
         {
-            EmpresaCuentas empresaCuentas = new EmpresaCuentas();
-            empresaCuentas.Cuentas = db.Cuentas.ToList();
-            empresaCuentas.Empresas = db.Empresas.ToList();
-            return View(empresaCuentas);
+            TodasLasClases todas = new TodasLasClases();
+            todas.Cuentas = db.Cuentas.ToList();
+            todas.Empresas = db.Empresas.ToList();
+            return View(todas);
         }
 
 
         [HttpPost]
         public ActionResult Index(HttpPostedFileBase postedFile, string EmpresaSeleccionada)
         {
-            EmpresaCuentas empresaCuentas = new EmpresaCuentas();
-            empresaCuentas.Empresas = db.Empresas.ToList();
+            TodasLasClases todas = new TodasLasClases();
+            todas.Empresas = db.Empresas.ToList();
             string filePath = string.Empty;
             if (postedFile != null)
             {
@@ -73,15 +73,15 @@ namespace Diseño.Controllers
             if (EmpresaSeleccionada != "")
             {
                 int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
-                empresaCuentas.Cuentas = db.Cuentas
+                todas.Cuentas = db.Cuentas
                         .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
                       .ToList();
             }
             else {
-                empresaCuentas.Cuentas = db.Cuentas.ToList();
+                todas.Cuentas = db.Cuentas.ToList();
             }
 
-            return View(empresaCuentas);
+            return View(todas);
             //return RedirectToAction("Index");
         }
 

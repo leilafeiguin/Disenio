@@ -1,5 +1,5 @@
 ﻿@using Diseño.Models
-@model Diseño.Models.IndicadorEmpresaCuentas
+@model Diseño.Models.TodasLasClases
 
 @{
     ViewBag.Title = "Indicadores";
@@ -22,7 +22,7 @@
     </tr>
 
     
-    @foreach (var item in Model.IndEmpresas.Indicadores)
+    @foreach (var item in Model.Indicadores)
     {     
         if (item.Tipo == "Predefinido") { 
         <tr>
@@ -67,7 +67,7 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model.IndEmpresas.Indicadores)
+    @foreach (var item in Model.Indicadores)
     {
         if (item.Tipo != "Predefinido")
         {
@@ -99,7 +99,7 @@ Elegir cuenta
 {
     <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
         <option value="">Seleccione una empresa</option>
-        @foreach (var item in Model.IndEmpresas.Empresas)
+        @foreach (var item in Model.Empresas)
         {
             <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
         }
@@ -107,7 +107,7 @@ Elegir cuenta
 
     <select id="IndicadorSeleccionado" name="IndicadorSeleccionado">
         <option value="">Seleccione un indicador</option>
-        @foreach (var item in Model.IndEmpresas.Indicadores)
+        @foreach (var item in Model.Indicadores)
         {
             <option>@Html.DisplayFor(model => item.Nombre)</option>
         }
