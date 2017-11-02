@@ -1,43 +1,42 @@
 ﻿@using Diseño.Models
-@model IEnumerable<Diseño.Models.Cuenta>[]
-
-
-@{
-    ViewBag.Title = "Cuentas";
-}
-
-<h2>Cuentas</h2>
-
-<!--<p>
-    @Html.ActionLink("Crear nueva cuenta", "Create")
-</p>
-    -->
-<p>Cargar nueva cuenta en archivo .csv:</p>
-<body>
-    @using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <input type="file" name="postedFile" required/>
-        <br />
-        <input type="submit" value="Importar" />
+@model Diseño.Models.EmpresaCuentas
+    @{
+        ViewBag.Title = "Cuentas";
     }
-</body>  
 
-<br/><br />
+    <h2>Cuentas</h2>
 
-<h3>Elegir empresa</h3>
+    <!--<p>
+        @Html.ActionLink("Crear nueva cuenta", "Create")
+    </p>
+        -->
+    <p>Cargar nueva cuenta en archivo .csv:</p>
+    <body>
+        @using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="file" name="postedFile" required />
+            <br />
+            <input type="submit" value="Importar" />
+        }
+    </body>
+
+    <br /><br />
+
+    <h3>Elegir empresa</h3>
     @using (Html.BeginForm("Index", "Cuentas", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
-            @foreach (var item in Model[0])
+            <option value="">Seleccione una empresa</option>
+            @foreach (var item in Model.Empresas)
             {
-                <option value="@item.Empresa.ID">@Html.DisplayFor(model => item.Empresa.Nombre)</option>
+                <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
             }
         </select>
-      <input type="submit" value="Seleccionar"/>
-    }    
+        <input type="submit" value="Seleccionar" />
+    }
 
 
-<table class="table">
+    <table class="table">
         <tr>
             <th>
                 Nombre
@@ -49,32 +48,32 @@
                 Fecha
             </th>
             <th>
-               Valor
+                Valor
             </th>
             <th>
                 Acciones
             </th>
         </tr>
-        @foreach (var item in Model[1])
+        @foreach (var item in Model.Cuentas)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Empresa.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fecha)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Valor)
-            </td>
-            <td>
-                @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
-                @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
-            </td>
-        </tr>
-                          }
-</table>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empresa.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </table>

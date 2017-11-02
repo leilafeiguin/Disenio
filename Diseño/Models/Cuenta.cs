@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Diseño.Models
 {
@@ -15,6 +16,9 @@ namespace Diseño.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { get; set; }
         public decimal Valor { get; set; }
+
+        [NotMapped]
+        public decimal ValorConIndicador { get; set; }
 
         public virtual Empresa Empresa { get; set; }
     }

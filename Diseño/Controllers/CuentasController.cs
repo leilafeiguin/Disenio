@@ -19,25 +19,18 @@ namespace Diseño.Controllers
         // GET: Cuentas1
         public ActionResult Index()
         {
-            List<Cuenta> cuentas = new List<Cuenta>();
-            List<Cuenta> cuentasTodas = new List<Cuenta>();
-            List<Cuenta>[] arrayCuentas = new List<Cuenta>[2];
-
-            cuentasTodas = db.Cuentas.ToList();
-            cuentas = db.Cuentas.ToList(); 
-            arrayCuentas[0] = cuentasTodas;
-            arrayCuentas[1] = cuentas;
-            return View(arrayCuentas);
+            EmpresaCuentas empresaCuentas = new EmpresaCuentas();
+            empresaCuentas.Cuentas = db.Cuentas.ToList();
+            empresaCuentas.Empresas = db.Empresas.ToList();
+            return View(empresaCuentas);
         }
 
 
         [HttpPost]
         public ActionResult Index(HttpPostedFileBase postedFile, string EmpresaSeleccionada)
         {
-            int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
-            List<Cuenta> cuentas = new List<Cuenta>();
-            List<Cuenta> cuentasTodas = new List<Cuenta>();
-            List<Cuenta>[] arrayCuentas = new List<Cuenta>[2];
+            EmpresaCuentas empresaCuentas = new EmpresaCuentas();
+            empresaCuentas.Empresas = db.Empresas.ToList();
             string filePath = string.Empty;
             if (postedFile != null)
             {
@@ -76,18 +69,20 @@ namespace Diseño.Controllers
                     }
                 }               
             }
-            if (EmpresaSeleccionada != null)
+
+            if (EmpresaSeleccionada != "")
             {
-                cuentasTodas = db.Cuentas.ToList();
-                cuentas = db.Cuentas
+                int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
+                empresaCuentas.Cuentas = db.Cuentas
                         .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
                       .ToList();
-                arrayCuentas[0] = cuentasTodas;
-                arrayCuentas[1] = cuentas;
-
-                return View(arrayCuentas);
             }
-            return RedirectToAction("Index");
+            else {
+                empresaCuentas.Cuentas = db.Cuentas.ToList();
+            }
+
+            return View(empresaCuentas);
+            //return RedirectToAction("Index");
         }
 
 
