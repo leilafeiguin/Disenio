@@ -227,6 +227,8 @@ namespace Diseño.Controllers
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula,Descripcion,Tipo")] Indicador indicador)
         {
             //Evaluar estructurura formula
+            //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
+            //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
             Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
             if (match.Success  && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
@@ -304,6 +306,8 @@ namespace Diseño.Controllers
         public ActionResult Edit([Bind(Include = "ID,Nombre,Formula,Descripcion,Tipo")] Indicador indicador)
         {
             //Evaluar estructurura formula
+            //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
+            //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
             Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
             if (match.Success && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
