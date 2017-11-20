@@ -32,6 +32,7 @@ namespace Diseño.Controllers
             TodasLasClases todas = new TodasLasClases();
             todas.Indicadores = db.Indicadores.ToList();
             todas.Empresas = db.Empresas.ToList();
+            List<Cuenta> cuentasParaIndicador = new List<Cuenta>();
 
             //if (EmpresaSeleccionada != null)
             if (EmpresaSeleccionada != "")
@@ -67,6 +68,12 @@ namespace Diseño.Controllers
             //Aca Evaluo los Indicadores
             if (IndicadorSeleccionado != "")
             {
+               /* if (IndicadorSeleccionado == "ROE")
+                {
+                    decimal ROE = AplicarROE(todas.Cuentas);
+                    todas.Cuentas[0].ValorConIndicador = ROE;
+                    return View(todas);
+                }*/
                 List<Indicador> indicadorActual = new List<Indicador>();
                 indicadorActual = db.Indicadores
                         .Where(c => c.Nombre == IndicadorSeleccionado)
@@ -75,20 +82,30 @@ namespace Diseño.Controllers
                 {
                     decimal ValorCuentaSeleccionada = todas.Cuentas[i].Valor;
                     string FormulaIndicadorSeleccionado = indicadorActual[0].Formula;
-                    todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada);
+
+                    if (EmpresaSeleccionada != "")
+                    {
+                        cuentasParaIndicador = todas.Cuentas;
+                    }
+                    else
+                    {
+                        int idEmpresaParaIndicador = Convert.ToInt32(todas.Cuentas[i].Empresa.ID);
+                        cuentasParaIndicador = db.Cuentas
+                            .Where(c => c.Empresa.ID == idEmpresaParaIndicador)
+                          .ToList();
+                    }
+
+                    todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada, cuentasParaIndicador);
                 }
+                
             }
-            /*if (IndicadorSeleccionado == "ROE") {
-                decimal ROE = AplicarROE(indicadorEmpresaModificable.Cuentas, EmpresaSeleccionada);
-                //indicadorCuenta.Cuentas[0].ValorEnIndicador = ROE;
-                //return View(indicadorCuenta);
-            }*/
 
             return View(todas);
             //return RedirectToAction("Index");
         }
 
-        public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada){
+        public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada, List<Cuenta> Cuentas)
+        {
             decimal[] Parametros = { 0, 0 };
             string[] formulaSeparada = FormulaIndicadorSeleccionado.Split();
             char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
@@ -105,13 +122,18 @@ namespace Diseño.Controllers
                         Parametros[numParametro] = ValorCuentaSeleccionada;
                         numParametro++;
                     }
+                    else if (IndicadorEnIndicador == "TotalEmpresa")
+                    {
+                        Parametros[numParametro] = TotalEmpresa(Cuentas);
+                        numParametro++;
+                    }
                     else
                     {//OTRO INDICADOR
                         List<Indicador> OtrosIndicadores = db.Indicadores
                                 .Where(c => c.Nombre == IndicadorEnIndicador)
                                 .ToList();
                         string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
-                        Parametros[numParametro] = evaluarIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada);
+                        Parametros[numParametro] = evaluarIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada, Cuentas);
                         numParametro++;
                     }
                 }
@@ -229,7 +251,8 @@ namespace Diseño.Controllers
             //Evaluar estructurura formula
             //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
             //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
-            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
+
+            Match match = Regex.Match(indicador.Formula, @"(^({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?$)");
             if (match.Success  && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
                 if (ModelState.IsValid)
@@ -271,7 +294,8 @@ namespace Diseño.Controllers
                     }
                 }
 
-                if (IndicadorEnIndicador == "ValorCuenta") {
+                if (IndicadorEnIndicador == "ValorCuenta" || IndicadorEnIndicador == "TotalEmpresa")
+                {
                     return true;
                 }
                 
@@ -372,13 +396,22 @@ namespace Diseño.Controllers
 
         }
 
-        public static decimal AplicarROE(List<Cuenta> Cuentas) {
-
+        public static decimal TotalEmpresa(List<Cuenta> Cuentas)
+        {
             decimal SumatoriaCuentasEmpresa = 0;
             for (int i = 0; i < Cuentas.Count; i++)
             {
                 SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
             }
+            
+            return SumatoriaCuentasEmpresa;
+            
+        }
+
+        public static decimal AplicarROE(List<Cuenta> Cuentas)
+        {
+
+            decimal SumatoriaCuentasEmpresa = TotalEmpresa(Cuentas);
 
             if (SumatoriaCuentasEmpresa == 0) {
                 return 0;
