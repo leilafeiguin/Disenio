@@ -251,7 +251,6 @@ namespace Diseño.Controllers
             //Evaluar estructurura formula
             //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
             //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
-
             Match match = Regex.Match(indicador.Formula, @"(^({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?$)");
             if (match.Success  && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
@@ -332,7 +331,7 @@ namespace Diseño.Controllers
             //Evaluar estructurura formula
             //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
             //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
-            Match match = Regex.Match(indicador.Formula, @"({.*} |[0-9]+ )(\+|\-|\*|\/)( {.*}| [0-9]+)(( (\+|\-|\*|\/)( {.*}| [0-9]+))+)?");
+            Match match = Regex.Match(indicador.Formula, @"(^({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?$)");
             if (match.Success && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
                 if (ModelState.IsValid)
