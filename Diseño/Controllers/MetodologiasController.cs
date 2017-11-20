@@ -107,6 +107,8 @@ namespace Diseño.Controllers
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula,Descripcion")] Metodologia metodologia)
         {
             //Evaluar estructurura formula
+            //Acepta punto: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?))+)?
+            //Acepta Coma: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?))+)?
             Match match = Regex.Match(metodologia.Formula, @"({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+))+)?");
             if (match.Success && ValidarTextoMetodologia(metodologia.Formula))
             {
@@ -213,6 +215,8 @@ namespace Diseño.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Nombre,Formula,Descripcion")] Metodologia metodologia)
         {
+            //Acepta punto: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?))+)?
+            //Acepta Coma: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?))+)?
             Match match = Regex.Match(metodologia.Formula, @"({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+))+)?");
             if (match.Success && ValidarTextoMetodologia(metodologia.Formula))
             {
