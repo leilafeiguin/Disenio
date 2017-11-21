@@ -109,7 +109,7 @@ Elegir cuenta
         <option value="">Seleccione un indicador</option>
         @foreach (var item in Model.Indicadores)
         {
-            <option>@Html.DisplayFor(model => item.Nombre)</option>
+            <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
         }
     </select>
     <input type="date" name="FechaInicial"/>

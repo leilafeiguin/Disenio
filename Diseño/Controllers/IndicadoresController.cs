@@ -68,15 +68,10 @@ namespace Diseño.Controllers
             //Aca Evaluo los Indicadores
             if (IndicadorSeleccionado != "")
             {
-               /* if (IndicadorSeleccionado == "ROE")
-                {
-                    decimal ROE = AplicarROE(todas.Cuentas);
-                    todas.Cuentas[0].ValorConIndicador = ROE;
-                    return View(todas);
-                }*/
+                int IDIndicadorSeleccionado = Convert.ToInt32(IndicadorSeleccionado);
                 List<Indicador> indicadorActual = new List<Indicador>();
                 indicadorActual = db.Indicadores
-                        .Where(c => c.Nombre == IndicadorSeleccionado)
+                        .Where(c => c.ID == IDIndicadorSeleccionado)
                       .ToList();
                 for (int i = 0; i <= todas.Cuentas.Count - 1; i++)
                 {

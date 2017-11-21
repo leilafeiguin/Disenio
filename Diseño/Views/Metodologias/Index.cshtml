@@ -51,7 +51,7 @@
 <h2>Metodologias evaluadas en empresas</h2>
 
 Elegir una o dos empresas
-@using (Html.BeginForm("Index", "Metodologias", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Index", "Metodologias", FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
 {
 	<select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
         <option value="">Seleccione una empresa</option>
@@ -72,9 +72,9 @@ Elegir una o dos empresas
 	<select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
         <option value="">Seleccione una metodologia</option>
 		@foreach (var item in Model.Metodologias)
-		{
-			<option>@Html.DisplayFor(model => item.Nombre)</option>
-		}
+        {
+            <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
+        }
 	</select>
 	<input type="submit" value="Seleccionar" />
 

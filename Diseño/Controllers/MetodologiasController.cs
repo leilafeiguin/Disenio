@@ -39,6 +39,7 @@ namespace Diseño.Controllers
             {
                 int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
                 int IDEmpresaSeleccionada2 = Convert.ToInt32(EmpresaSeleccionada2);
+                int IDMetodologia = Convert.ToInt32(MetodologiaSeleccionada);
                 List<Cuenta> CuentasEmpresa1 = new List<Cuenta>();
                 List<Cuenta> CuentasEmpresa2 = new List<Cuenta>();
 
@@ -49,15 +50,247 @@ namespace Diseño.Controllers
                         .Where(c => c.Empresa.ID == IDEmpresaSeleccionada2)
                       .ToList();
 
-                if (MetodologiaSeleccionada == "Maximizar ROE") {
+                /*if (MetodologiaSeleccionada == "Maximizar ROE") {
                     todas.Cuentas = maximizarRoe(CuentasEmpresa1, CuentasEmpresa2);
-                }
+                }*/
+
+                string formulaMetodologia = db.Metodologias
+                        .Where(c => c.ID == IDMetodologia)
+                      .First().Formula;
+                todas.Cuentas = evaluarMetodologia(formulaMetodologia, CuentasEmpresa1, CuentasEmpresa2);
                 
             }else{
                 todas.Cuentas = db.Cuentas.ToList();
             }
 
             return View(todas);
+        }
+
+        public decimal aplicarIndicadorAEmpresa(string unaParte, List<Cuenta> CuentasEmpresa)
+        {
+            string[] empresaIndicador = unaParte.Split('-');
+            string indic = empresaIndicador[1];
+            string formulaIndicador = db.Indicadores
+                            .Where(c => c.Nombre.Equals(indic))
+                          .First().Formula;
+            return evaluarIndicador(formulaIndicador, CuentasEmpresa[CuentasEmpresa.Count - 1].Valor, CuentasEmpresa);
+        }
+
+        public List<Cuenta> evaluarMetodologia(string FormulaMetologiaSeleccionada, List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
+        {
+            int empresaActual = 0;
+            List<Cuenta>[] idEmpresa = { CuentasEmpresa1, CuentasEmpresa2 };
+            decimal[] Parametros = { 0, 0 };
+            string[] formulaSeparada = FormulaMetologiaSeleccionada.Split();
+            char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
+            int numParametro = 0;
+
+            for (int k = 0; k < formulaSeparada.Length; k += 2)
+            {
+                if (formulaSeparada[k].Contains("{") && formulaSeparada[k].Contains("}"))
+                {
+                    string unaParte = GetSubstringByString("{", "}", formulaSeparada[k]);
+
+                    if (existeEmpresaIndicador(unaParte))
+                    {
+                        Parametros[numParametro] = aplicarIndicadorAEmpresa(unaParte, idEmpresa[empresaActual]);
+                        numParametro++;
+                        empresaActual++;
+                    }
+                    else
+                    {
+                        Parametros[numParametro] = Convert.ToDecimal(formulaSeparada[k]);
+                        numParametro++;
+                    }
+                }
+            }
+            int numOperador = 0;
+            for (int k = 1; k < formulaSeparada.Length; k += 2)
+            {
+
+                switch (formulaSeparada[k])
+                {
+                    case ("<"):
+                        Operadores[numOperador] = '<';
+                        numOperador++;
+                        break;
+                    case (">"):
+                        Operadores[numOperador] = '>';
+                        numOperador++;
+                        break;
+                    case ("+"):
+                        Operadores[numOperador] = '+';
+                        numOperador++;
+                        break;
+                    case ("-"):
+                        Operadores[numOperador] = '-';
+                        numOperador++;
+                        break;
+                    case ("*"):
+                        Operadores[numOperador] = '*';
+                        numOperador++;
+                        break;
+                    case ("/"):
+                        Operadores[numOperador] = '/';
+                        numOperador++;
+                        break;
+                }
+            }
+            return AplicarFormulaMetodologia(Operadores, Parametros, CuentasEmpresa1, CuentasEmpresa2);
+        }
+
+
+        public List<Cuenta> AplicarFormulaMetodologia(char[] Operadores, decimal[] Parametros, List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
+        {
+            List<Cuenta> cuentas = new List<Cuenta>();
+            for (int z = 0; z < Operadores.Length; z++)
+            {
+                if (Operadores[z] == '>')
+                {
+                    if (Parametros[z] > Parametros[z + 1])
+                        cuentas = CuentasEmpresa1;
+                    else
+                        cuentas = CuentasEmpresa2;
+                }
+                else if (Operadores[z] == '<')
+                {
+                    if (Parametros[z] < Parametros[z + 1])
+                        cuentas = CuentasEmpresa1;
+                    else
+                        cuentas = CuentasEmpresa2;
+                }
+            }
+            return cuentas;
+        }
+
+        public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada, List<Cuenta> Cuentas)
+        {
+            decimal[] Parametros = { 0, 0 };
+            string[] formulaSeparada = FormulaIndicadorSeleccionado.Split();
+            char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
+            int numParametro = 0;
+
+            for (int k = 0; k < formulaSeparada.Length; k += 2)
+            {
+                if (formulaSeparada[k].Contains("{") && formulaSeparada[k].Contains("}"))
+                {
+                    string IndicadorEnIndicador = formulaSeparada[k].Replace("{", "");
+                    IndicadorEnIndicador = IndicadorEnIndicador.Replace("}", "");
+                    if (IndicadorEnIndicador == "ValorCuenta")
+                    {
+                        Parametros[numParametro] = ValorCuentaSeleccionada;
+                        numParametro++;
+                    }
+                    else if (IndicadorEnIndicador == "TotalEmpresa")
+                    {
+                        Parametros[numParametro] = TotalEmpresa(Cuentas);
+                        numParametro++;
+                    }
+                    else
+                    {//OTRO INDICADOR
+                        List<Indicador> OtrosIndicadores = db.Indicadores
+                                .Where(c => c.Nombre == IndicadorEnIndicador)
+                                .ToList();
+                        string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
+                        Parametros[numParametro] = evaluarIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada, Cuentas);
+                        numParametro++;
+                    }
+                }
+                else
+                {
+                    Parametros[numParametro] = Convert.ToDecimal(formulaSeparada[k]);
+                    numParametro++;
+                }
+            }
+            int numOperador = 0;
+            for (int k = 1; k < formulaSeparada.Length; k += 2)
+            {
+
+                switch (formulaSeparada[k])
+                {
+                    case ("+"):
+                        Operadores[numOperador] = '+';
+                        numOperador++;
+                        break;
+                    case ("-"):
+                        Operadores[numOperador] = '-';
+                        numOperador++;
+                        break;
+                    case ("*"):
+                        Operadores[numOperador] = '*';
+                        numOperador++;
+                        break;
+                    case ("/"):
+                        Operadores[numOperador] = '/';
+                        numOperador++;
+                        break;
+                }
+            }
+            return AplicarFormula(Operadores, Parametros);
+        }
+
+
+        public decimal AplicarFormula(char[] Operadores, decimal[] Parametros)
+        {
+            while (tieneMultiplicacionODivision(Operadores))
+            {
+                for (int j = 0; j < Operadores.Length; j++)
+                {
+                    if (Operadores[j] == '*')
+                    {
+                        Parametros[j] = (Parametros[j] * Parametros[j + 1]);
+                        Parametros = Parametros.Where((source, index) => index != j + 1).ToArray();
+                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
+                    }
+                    else if (Operadores[j] == '/')
+                    {
+                        Parametros[j] = (Parametros[j] / Parametros[j + 1]);
+                        Parametros = Parametros.Where((source, index) => index != j + 1).ToArray();
+                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
+                    }
+                }
+            }
+
+            for (int z = 0; z < Operadores.Length; z++)
+            {
+                if (Operadores[z] == '+')
+                {
+                    Parametros[z] = (Parametros[z] + Parametros[z + 1]);
+                    Parametros = Parametros.Where((source, index) => index != z + 1).ToArray();
+                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
+                }
+                else if (Operadores[z] == '-')
+                {
+                    Parametros[z] = (Parametros[z] - Parametros[z + 1]);
+                    Parametros = Parametros.Where((source, index) => index != z + 1).ToArray();
+                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
+                }
+            }
+            return Parametros[0];
+        }
+
+        bool tieneMultiplicacionODivision(char[] Operadores)
+        {
+            if (Operadores.Contains('*') || Operadores.Contains('/'))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static decimal TotalEmpresa(List<Cuenta> Cuentas)
+        {
+            decimal SumatoriaCuentasEmpresa = 0;
+            for (int i = 0; i < Cuentas.Count; i++)
+            {
+                SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
+            }
+
+            return SumatoriaCuentasEmpresa;
+
         }
 
         public List<Cuenta> maximizarRoe(List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
@@ -136,6 +369,52 @@ namespace Diseño.Controllers
 
         public bool ValidarTextoMetodologia(string formula)
         {
+            //{empresa-ROE} > {empresa-ROA}
+            string[] parametros = formula.Split();
+            for (int i = 0; i < parametros.Length; i++)
+            {
+                if (parametros[i].Contains("{") && parametros[i].Contains("}"))
+                {
+                    string unaParte = GetSubstringByString("{", "}", parametros[i]);
+                    
+                    if (!existeEmpresaIndicador(unaParte))
+                        return false;
+                }
+            }
+            
+            return true;
+        }
+
+        public bool existeEmpresaIndicador(string unaParte)
+        {
+            string[] empresaIndicador = unaParte.Split('-');
+            string empresa = empresaIndicador[0];
+            string indicador = empresaIndicador[1];
+            bool empresaOk = false;
+            bool indicadorOk = false;
+            if (empresa == "empresa")
+            {
+                empresaOk = true;
+            }
+            else
+            {
+                return false;
+            }
+            List<Indicador> indicadores = new List<Indicador>();
+            indicadores = db.Indicadores.ToList();
+            foreach (Indicador e in indicadores)
+            {
+                if (e.Nombre.Equals(indicador))
+                {
+                    indicadorOk = true;
+                }
+            }
+
+            return (empresaOk && indicadorOk);
+        }
+
+        /*public bool ValidarTextoMetodologia(string formula)
+        {
             while (formula.Contains("{"))
             {
                 string unaParte = GetSubstringByString("{", "}", formula);
@@ -159,7 +438,8 @@ namespace Diseño.Controllers
                         pasoEmpresa = 1;
                     }
                 }
-                if(pasoEmpresa != 1){
+                if (pasoEmpresa != 1)
+                {
                     return false;
                 }
                 //Evaluo la cuenta o Indicador
@@ -189,8 +469,7 @@ namespace Diseño.Controllers
 
             }
             return true;
-        }
-
+        }*/
 
 
         // GET: Metodologias/Edit/5

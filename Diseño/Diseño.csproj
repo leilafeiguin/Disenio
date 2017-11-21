@@ -194,6 +194,7 @@
     <Compile Include="Models\Metodologia.cs" />
     <Compile Include="Models\TodasLasClases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingletonDB.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
