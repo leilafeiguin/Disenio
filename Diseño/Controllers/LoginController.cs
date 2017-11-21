@@ -15,7 +15,7 @@ namespace Diseño.Controllers
         // GET: /Login/
         public ActionResult Index()
         {
-            return View();
+            return View("Index", "_LayoutLogin");
         }
 
         [HttpPost]
@@ -29,7 +29,7 @@ namespace Diseño.Controllers
                 {
                     Session["UserID"] = obj.ID.ToString();
                     Session["Username"] = obj.Username.ToString();
-                    return RedirectToAction("UserDashBoard");
+                    return View("../Home/Index");
                 }
                 
             }
