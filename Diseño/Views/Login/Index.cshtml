@@ -1,0 +1,48 @@
+﻿@model Diseño.Models.Usuario
+
+@{
+    ViewBag.Title = "Ingresar";
+}
+
+<h2>Ingresar</h2>
+@using (Html.BeginForm("Login", "Login", FormMethod.Post))
+{
+    <fieldset>
+        <legend>Ingrese al sistema para poder operar</legend>
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @if (@ViewBag.Message != null)
+        {
+            <div style="border: 1px solid red">
+                @ViewBag.Message
+            </div>
+        }
+        <table>
+            <tr>
+                <td>Usuario</td>
+                <td>@Html.TextBoxFor(a => a.Username)</td>
+                <td>@Html.ValidationMessageFor(a => a.Username)</td>
+            </tr>
+            <tr>
+                <td>
+                    Contraseña
+                </td>
+                <td>
+                    @Html.PasswordFor(a => a.Password)
+                </td>
+                <td>
+                    @Html.ValidationMessageFor(a => a.Password)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Ingresar" />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </fieldset>
+}  
+@Html.Raw(TempData["msgUsuarioInvalido"])

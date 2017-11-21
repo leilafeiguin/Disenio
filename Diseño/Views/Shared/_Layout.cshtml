@@ -28,6 +28,15 @@
                     <li>@Html.ActionLink("Metodologías", "Index", "Metodologias")</li>
                 </ul>
                <!-- @Html.Partial("_LoginPartial")-->
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Session["UserName"] != null)
+                    {
+                        <li><a style="align">@Session["UserName"].ToString()</a></li>
+                    }
+                    
+                </ul>
+                
+                
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@ namespace Diseño.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Inicial : DbMigration
+    public partial class donde_invierto_migration : DbMigration
     {
         public override void Up()
         {
@@ -54,12 +54,23 @@ namespace Diseño.Migrations
                     })
                 .PrimaryKey(t => t.ID);
             
+            CreateTable(
+                "dbo.Usuario",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Username = c.String(),
+                        Password = c.String(),
+                    })
+                .PrimaryKey(t => t.ID);
+            
         }
         
         public override void Down()
         {
             DropForeignKey("dbo.Cuenta", "Empresa_ID", "dbo.Empresa");
             DropIndex("dbo.Cuenta", new[] { "Empresa_ID" });
+            DropTable("dbo.Usuario");
             DropTable("dbo.Metodologia");
             DropTable("dbo.Indicador");
             DropTable("dbo.Empresa");

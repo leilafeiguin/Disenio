@@ -46,6 +46,17 @@ namespace Diseño.DAL
                context.Empresas.Add(item);
             }
 
+           var usuarios = new List<Usuario>
+            {
+            new Usuario{ID=1, Username="admin", Password="1234"},
+            new Usuario{ID=2, Username="groch", Password="gonza"},
+            new Usuario{ID=3, Username="lsaclier", Password="aprobanos"}
+            };
+           foreach (var item in usuarios)
+           {
+               context.Usuarios.Add(item);
+           }
+
             //empresas.ForEach(s => context.Empresas.Add(s));
             context.SaveChanges();
         }
