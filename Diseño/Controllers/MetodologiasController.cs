@@ -29,139 +29,268 @@ namespace Diseño.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(string EmpresaSeleccionada, string EmpresaSeleccionada2, string MetodologiaSeleccionada) 
+        public ActionResult Index(string MetodologiaSeleccionada)
         {
             TodasLasClases todas = new TodasLasClases();
             todas.Metodologias = db.Metodologias.ToList();
-            todas.Empresas = db.Empresas.ToList();
 
-            if (EmpresaSeleccionada != "" && EmpresaSeleccionada2 != "" && EmpresaSeleccionada != EmpresaSeleccionada2 && MetodologiaSeleccionada != "")
+            if (MetodologiaSeleccionada != "")
             {
-                int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
-                int IDEmpresaSeleccionada2 = Convert.ToInt32(EmpresaSeleccionada2);
                 int IDMetodologia = Convert.ToInt32(MetodologiaSeleccionada);
-                List<Cuenta> CuentasEmpresa1 = new List<Cuenta>();
-                List<Cuenta> CuentasEmpresa2 = new List<Cuenta>();
-
-                CuentasEmpresa1 = db.Cuentas
-                        .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
-                      .ToList();
-                CuentasEmpresa2 = db.Cuentas
-                        .Where(c => c.Empresa.ID == IDEmpresaSeleccionada2)
-                      .ToList();
-
-                /*if (MetodologiaSeleccionada == "Maximizar ROE") {
-                    todas.Cuentas = maximizarRoe(CuentasEmpresa1, CuentasEmpresa2);
-                }*/
-
                 string formulaMetodologia = db.Metodologias
                         .Where(c => c.ID == IDMetodologia)
                       .First().Formula;
-                todas.Cuentas = evaluarMetodologia(formulaMetodologia, CuentasEmpresa1, CuentasEmpresa2);
-                
-            }else{
-                todas.Cuentas = db.Cuentas.ToList();
+
+                List<Empresa> empresas = new List<Empresa>();
+                string[] formulaSeparada = formulaMetodologia.Split('/');
+                int idIndicador = Convert.ToInt32(formulaSeparada[0]);
+                string formulaIndicador = db.Indicadores
+                        .Where(c => c.ID == idIndicador)
+                      .First().Formula;
+                string operacion = formulaSeparada[1];
+                int valor = Convert.ToInt32(formulaSeparada[2]);
+                switch (operacion)
+                {
+                    case ("<"):
+                        empresas = Mayor(operacion, valor, formulaIndicador);
+                        break;
+                    case (">"):
+                        empresas = Menor(operacion, valor, formulaIndicador);
+                        break;
+                    case ("Maximo"):
+                        empresas = Maximo(formulaIndicador);
+                        break;
+                    case ("Minimo"):
+                        empresas = Minimo(formulaIndicador);
+                        break;
+                    case ("Ascendiente"):
+                        break;
+                    case ("Descendiente"):
+                        break;
+                }
+                todas.Empresas = empresas;
+
+            }
+            else
+            {
+                todas.Empresas = db.Empresas.ToList();
             }
 
             return View(todas);
         }
 
-        public decimal aplicarIndicadorAEmpresa(string unaParte, List<Cuenta> CuentasEmpresa)
+        public List<Empresa> Maximo(string formulaIndicador)
         {
-            string[] empresaIndicador = unaParte.Split('-');
-            string indic = empresaIndicador[1];
-            string formulaIndicador = db.Indicadores
-                            .Where(c => c.Nombre.Equals(indic))
-                          .First().Formula;
-            return evaluarIndicador(formulaIndicador, CuentasEmpresa[CuentasEmpresa.Count - 1].Valor, CuentasEmpresa);
+            List<Empresa> empresas = new List<Empresa>();
+            List<int> lista = new List<int>();
+            empresas = db.Empresas.ToList();
+            //Asi es para ordenar Descendiente
+            empresas.Sort((empresa1, empresa2) => -1 * maximoConIndicador(empresa1, formulaIndicador).CompareTo(maximoConIndicador(empresa2, formulaIndicador)));
+            return empresas;
         }
 
-        public List<Cuenta> evaluarMetodologia(string FormulaMetologiaSeleccionada, List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
+        public List<Empresa> Minimo(string formulaIndicador)
         {
-            int empresaActual = 0;
-            List<Cuenta>[] idEmpresa = { CuentasEmpresa1, CuentasEmpresa2 };
-            decimal[] Parametros = { 0, 0 };
-            string[] formulaSeparada = FormulaMetologiaSeleccionada.Split();
-            char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
-            int numParametro = 0;
-
-            for (int k = 0; k < formulaSeparada.Length; k += 2)
-            {
-                if (formulaSeparada[k].Contains("{") && formulaSeparada[k].Contains("}"))
-                {
-                    string unaParte = GetSubstringByString("{", "}", formulaSeparada[k]);
-
-                    if (existeEmpresaIndicador(unaParte))
-                    {
-                        Parametros[numParametro] = aplicarIndicadorAEmpresa(unaParte, idEmpresa[empresaActual]);
-                        numParametro++;
-                        empresaActual++;
-                    }
-                    else
-                    {
-                        Parametros[numParametro] = Convert.ToDecimal(formulaSeparada[k]);
-                        numParametro++;
-                    }
-                }
-            }
-            int numOperador = 0;
-            for (int k = 1; k < formulaSeparada.Length; k += 2)
-            {
-
-                switch (formulaSeparada[k])
-                {
-                    case ("<"):
-                        Operadores[numOperador] = '<';
-                        numOperador++;
-                        break;
-                    case (">"):
-                        Operadores[numOperador] = '>';
-                        numOperador++;
-                        break;
-                    case ("+"):
-                        Operadores[numOperador] = '+';
-                        numOperador++;
-                        break;
-                    case ("-"):
-                        Operadores[numOperador] = '-';
-                        numOperador++;
-                        break;
-                    case ("*"):
-                        Operadores[numOperador] = '*';
-                        numOperador++;
-                        break;
-                    case ("/"):
-                        Operadores[numOperador] = '/';
-                        numOperador++;
-                        break;
-                }
-            }
-            return AplicarFormulaMetodologia(Operadores, Parametros, CuentasEmpresa1, CuentasEmpresa2);
+            List<Empresa> empresas = new List<Empresa>();
+            List<int> lista = new List<int>();
+            empresas = db.Empresas.ToList();
+            //Asi es para ordenar Ascendiente
+            empresas.Sort((empresa1, empresa2) => maximoConIndicador(empresa1, formulaIndicador).CompareTo(maximoConIndicador(empresa2, formulaIndicador)));
+            return empresas;
         }
 
-
-        public List<Cuenta> AplicarFormulaMetodologia(char[] Operadores, decimal[] Parametros, List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
+        public decimal maximoConIndicador(Empresa empresa, string formulaIndicador)
         {
             List<Cuenta> cuentas = new List<Cuenta>();
-            for (int z = 0; z < Operadores.Length; z++)
+            cuentas = empresa.Cuentas.ToList();
+            decimal numero = 0;
+            foreach (Cuenta cuentaActual in cuentas)
             {
-                if (Operadores[z] == '>')
+                decimal valorActual = evaluarIndicador(formulaIndicador, cuentaActual.Valor, cuentas);
+                if (valorActual > numero)
+                    numero = valorActual;
+            }
+
+            return numero;
+        }
+
+        public List<Empresa> Mayor(string operacion, decimal valor, string formulaIndicador)
+        {
+            List<Empresa> empresas = new List<Empresa>();
+            List<int> lista = new List<int>();
+            empresas = db.Empresas.ToList();
+            //Asi es para ordenar Descendiente
+            empresas.Sort((empresa1, empresa2) => -1 * masCuentas(empresa1, formulaIndicador, operacion, valor).CompareTo(masCuentas(empresa2, formulaIndicador, operacion, valor)));
+            return empresas;
+        }
+
+        public List<Empresa> Menor(string operacion, decimal valor, string formulaIndicador)
+        {
+            List<Empresa> empresas = new List<Empresa>();
+            List<int> lista = new List<int>();
+            empresas = db.Empresas.ToList();
+            //Asi es para ordenar Descendiente
+            empresas.Sort((empresa1, empresa2) => -1 * masCuentas(empresa1, formulaIndicador, operacion, valor).CompareTo(masCuentas(empresa2, formulaIndicador, operacion, valor)));
+            return empresas;
+        }
+
+        public decimal masCuentas(Empresa empresa, string formulaIndicador, string operacion, decimal valor)
+        {
+            List<Cuenta> cuentas = new List<Cuenta>();
+            cuentas = empresa.Cuentas.ToList();
+            decimal cantidad = 0;
+            foreach (Cuenta cuentaActual in cuentas)
+            {
+                decimal valorActual = evaluarIndicador(formulaIndicador, cuentaActual.Valor, cuentas);
+                if (operacion.Equals(">"))
                 {
-                    if (Parametros[z] > Parametros[z + 1])
-                        cuentas = CuentasEmpresa1;
-                    else
-                        cuentas = CuentasEmpresa2;
+                    if (valorActual > valor)
+                        cantidad++;
                 }
-                else if (Operadores[z] == '<')
+                if (operacion.Equals("<"))
                 {
-                    if (Parametros[z] < Parametros[z + 1])
-                        cuentas = CuentasEmpresa1;
-                    else
-                        cuentas = CuentasEmpresa2;
+                    if (valorActual < valor)
+                        cantidad++;
                 }
             }
-            return cuentas;
+
+            return cantidad;
         }
+
+        public List<Cuenta> maximizarRoe(List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
+        {
+            decimal E1 = IndicadoresController.AplicarROE(CuentasEmpresa1);
+            //indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
+            decimal E2 = IndicadoresController.AplicarROE(CuentasEmpresa2);
+            //indicadorCuenta2.Cuentas[0].ValorEnIndicador = E2;
+
+            if (E1 > E2)
+            {
+                return CuentasEmpresa1;
+            }
+            else
+            {
+                return CuentasEmpresa2;
+            }
+        }
+
+
+        // GET: Metodologias/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Metodologia metodologia = db.Metodologias.Find(id);
+            if (metodologia == null)
+            {
+                return HttpNotFound();
+            }
+            return View(metodologia);
+        }
+
+        // GET: Metodologias/Create
+        public ActionResult Create()
+        {
+            TodasLasClases todas = new TodasLasClases();
+            todas.Indicadores = db.Indicadores.ToList();
+            return View(todas);
+        }
+
+        // POST: Metodologias/Create
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
+        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string Nombre, int indicador, string operacion, string valor, string Descripcion)
+        {
+            Metodologia metodologia = new Metodologia();
+            metodologia.Nombre = Nombre;
+            metodologia.Descripcion = Descripcion;
+            metodologia.Formula = indicador + "/" + operacion + "/" + valor;
+
+            if (ModelState.IsValid)
+            {
+                db.Metodologias.Add(metodologia);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(metodologia);
+        }
+
+        // GET: Metodologias/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Metodologia metodologia = db.Metodologias.Find(id);
+            if (metodologia == null)
+            {
+                return HttpNotFound();
+            }
+            return View(metodologia);
+        }
+
+        // POST: Metodologias/Edit/5
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
+        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(string Nombre, int indicador, string operacion, decimal valor, string Descripcion, Metodologia metodologia)
+        {
+            metodologia.Nombre = Nombre;
+            metodologia.Descripcion = Descripcion;
+            metodologia.Formula = indicador + "/" + operacion + "/" + valor;
+
+            if (ModelState.IsValid)
+            {
+                db.Entry(metodologia).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(metodologia);
+        }
+
+        // GET: Metodologias/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Metodologia metodologia = db.Metodologias.Find(id);
+            if (metodologia == null)
+            {
+                return HttpNotFound();
+            }
+            return View(metodologia);
+        }
+
+        // POST: Metodologias/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Metodologia metodologia = db.Metodologias.Find(id);
+            db.Metodologias.Remove(metodologia);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+
+
 
         public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada, List<Cuenta> Cuentas)
         {
@@ -293,261 +422,6 @@ namespace Diseño.Controllers
 
         }
 
-        public List<Cuenta> maximizarRoe(List<Cuenta> CuentasEmpresa1, List<Cuenta> CuentasEmpresa2)
-        {
-            decimal E1 = IndicadoresController.AplicarROE(CuentasEmpresa1);
-            //indicadorCuenta1.Cuentas[0].ValorEnIndicador = E1;
-            decimal E2 = IndicadoresController.AplicarROE(CuentasEmpresa2);
-            //indicadorCuenta2.Cuentas[0].ValorEnIndicador = E2;
 
-            if (E1 > E2)
-            {
-                return CuentasEmpresa1;
-            }
-            else
-            {
-                return CuentasEmpresa2;
-            }
-        }
-
-
-        // GET: Metodologias/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Metodologia metodologia = db.Metodologias.Find(id);
-            if (metodologia == null)
-            {
-                return HttpNotFound();
-            }
-            return View(metodologia);
-        }
-
-        // GET: Metodologias/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Metodologias/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nombre,Formula,Descripcion")] Metodologia metodologia)
-        {
-            //Evaluar estructurura formula
-            //Acepta punto: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?))+)?
-            //Acepta Coma: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?))+)?
-            Match match = Regex.Match(metodologia.Formula, @"({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+))+)?");
-            if (match.Success && ValidarTextoMetodologia(metodologia.Formula))
-            {
-                if (ModelState.IsValid)
-                {
-                    db.Metodologias.Add(metodologia);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                // Devolver mensaje de error, expresion no valida
-                TempData["msgExpresionNoValida"] = "<script>alert('La expresion de la fórmula o el nombre no es valida. Por favor ingresela de nuevo.');</script>";
-
-            }
-
-            return View(metodologia);
-        }
-        //Validar texto metodologia
-        public string GetSubstringByString(string a, string b, string c)
-        {
-            return c.Substring((c.IndexOf(a) + a.Length), (c.IndexOf(b) - c.IndexOf(a) - a.Length));
-        }
-
-        public bool ValidarTextoMetodologia(string formula)
-        {
-            //{empresa-ROE} > {empresa-ROA}
-            string[] parametros = formula.Split();
-            for (int i = 0; i < parametros.Length; i++)
-            {
-                if (parametros[i].Contains("{") && parametros[i].Contains("}"))
-                {
-                    string unaParte = GetSubstringByString("{", "}", parametros[i]);
-                    
-                    if (!existeEmpresaIndicador(unaParte))
-                        return false;
-                }
-            }
-            
-            return true;
-        }
-
-        public bool existeEmpresaIndicador(string unaParte)
-        {
-            string[] empresaIndicador = unaParte.Split('-');
-            string empresa = empresaIndicador[0];
-            string indicador = empresaIndicador[1];
-            bool empresaOk = false;
-            bool indicadorOk = false;
-            if (empresa == "empresa")
-            {
-                empresaOk = true;
-            }
-            else
-            {
-                return false;
-            }
-            List<Indicador> indicadores = new List<Indicador>();
-            indicadores = db.Indicadores.ToList();
-            foreach (Indicador e in indicadores)
-            {
-                if (e.Nombre.Equals(indicador))
-                {
-                    indicadorOk = true;
-                }
-            }
-
-            return (empresaOk && indicadorOk);
-        }
-
-        /*public bool ValidarTextoMetodologia(string formula)
-        {
-            while (formula.Contains("{"))
-            {
-                string unaParte = GetSubstringByString("{", "}", formula);
-                string aux = "{" + unaParte + "}";
-                int index = formula.IndexOf(aux);
-                string cleanPath = (index < 0)
-                    ? formula
-                    : formula.Remove(index, aux.Length);
-                //evaluar el substring
-                string[] empresaCuenta = unaParte.Split('-');
-                string empresaAevaluar = empresaCuenta[0];
-                string ceuntaOindicadorAevaluar = empresaCuenta[1];
-                //Evaluo la empresa
-                List<Empresa> empresas = new List<Empresa>();
-                empresas = db.Empresas.ToList();
-                int pasoEmpresa = 0;
-                foreach (Empresa e in empresas)
-                {
-                    if (e.Nombre.Equals(empresaAevaluar))
-                    {
-                        pasoEmpresa = 1;
-                    }
-                }
-                if (pasoEmpresa != 1)
-                {
-                    return false;
-                }
-                //Evaluo la cuenta o Indicador
-                List<Cuenta> cuentas = new List<Cuenta>();
-                cuentas = db.Cuentas.ToList();
-                int pasoCuentaIndicador = 0;
-                foreach (Cuenta e in cuentas)
-                {
-                    if (e.Nombre.Equals(ceuntaOindicadorAevaluar))
-                    {
-                        pasoCuentaIndicador = 1;
-                    }
-                }
-                List<Indicador> indicadores = new List<Indicador>();
-                indicadores = db.Indicadores.ToList();
-                foreach (Indicador e in indicadores)
-                {
-                    if (e.Nombre.Equals(ceuntaOindicadorAevaluar))
-                    {
-                        pasoCuentaIndicador = 1;
-                    }
-                }
-                if (pasoCuentaIndicador != 1)
-                {
-                    return false;
-                }
-
-            }
-            return true;
-        }*/
-
-
-        // GET: Metodologias/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Metodologia metodologia = db.Metodologias.Find(id);
-            if (metodologia == null)
-            {
-                return HttpNotFound();
-            }
-            return View(metodologia);
-        }
-
-        // POST: Metodologias/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Nombre,Formula,Descripcion")] Metodologia metodologia)
-        {
-            //Acepta punto: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\.[0-9]+)?))+)?
-            //Acepta Coma: ({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+(\,[0-9]+)?))+)?
-            Match match = Regex.Match(metodologia.Formula, @"({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+)((( < | > | == | != | >= | <= )({[A-Za-z0-9]+-[A-Za-z0-9]+}|[0-9]+))+)?");
-            if (match.Success && ValidarTextoMetodologia(metodologia.Formula))
-            {
-                if (ModelState.IsValid)
-                {
-                    db.Entry(metodologia).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                // Devolver mensaje de error, expresion no valida
-                TempData["msgExpresionNoValida"] = "<script>alert('La expresion de la fórmula o el nombre no es valida. Por favor ingresela de nuevo.');</script>";
-
-            }
-            return View(metodologia);
-        }
-
-        // GET: Metodologias/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Metodologia metodologia = db.Metodologias.Find(id);
-            if (metodologia == null)
-            {
-                return HttpNotFound();
-            }
-            return View(metodologia);
-        }
-
-        // POST: Metodologias/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Metodologia metodologia = db.Metodologias.Find(id);
-            db.Metodologias.Remove(metodologia);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

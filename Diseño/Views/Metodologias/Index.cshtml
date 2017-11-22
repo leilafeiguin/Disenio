@@ -12,39 +12,39 @@
 </p>
 
 <table class="table">
-	<tr>
-		<th>
-			Nombre
-		</th>
-		<th>
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th>
             Formula
-		</th>
+        </th>
         <th>
             Descripcion
         </th>
-		<th></th>
-	</tr>
+        <th></th>
+    </tr>
 
 
-	@foreach (var item in Model.Metodologias)
-	{		
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Nombre)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Formula)
-				</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descripcion)
-                </td>
-				<td>
-					@Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
-					@Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
-					@Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
-				</td>
-			</tr>
-	}
+    @foreach (var item in Model.Metodologias)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Formula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+    }
 
 </table>
 
@@ -53,30 +53,14 @@
 Elegir una o dos empresas
 @using (Html.BeginForm("Index", "Metodologias", FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
 {
-	<select id="EmpresaSeleccionada" name="EmpresaSeleccionada">
-        <option value="">Seleccione una empresa</option>
-		@foreach (var item in Model.Empresas)
-        {
-            <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
-        }
-	</select>
-
-	<select id="EmpresaSeleccionada2" name="EmpresaSeleccionada2">
-        <option value="">Seleccione una empresa</option>
-		@foreach (var item in Model.Empresas)
-        {
-            <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
-        }
-	</select>
-
-	<select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
+    <select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
         <option value="">Seleccione una metodologia</option>
-		@foreach (var item in Model.Metodologias)
+        @foreach (var item in Model.Metodologias)
         {
             <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
         }
-	</select>
-	<input type="submit" value="Seleccionar" />
+    </select>
+    <input type="submit" value="Seleccionar" />
 
     <table class="table">
         <tr>
@@ -84,33 +68,21 @@ Elegir una o dos empresas
                 Nombre
             </th>
             <th>
-                Empresa
-            </th>
-            <th>
-                Fecha
-            </th>
-            <th>
-                Valor
+                Fecha de iniciación
             </th>
             <th></th>
         </tr>
 
-        @foreach (var item in Model.Cuentas)
+        @foreach (var item in Model.Empresas)
         {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Empresa.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Fecha)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Valor)
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+            </tr>
         }
     </table>
 }
