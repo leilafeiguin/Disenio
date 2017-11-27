@@ -50,7 +50,7 @@ namespace Diseño.Controllers
                 List<Empresa> empresas = new List<Empresa>();
                 string[] formulaSeparada = metodologia.Formula.Split('/');
                 string operacion = formulaSeparada[1];
-                int valor = Convert.ToInt32(formulaSeparada[2]);
+                decimal valor = Convert.ToDecimal(formulaSeparada[2]);
                 string formulaIndicador = "";
                 if (operacion != "Longevidad")
                 {
@@ -263,11 +263,13 @@ namespace Diseño.Controllers
             List<Cuenta> cuentas = new List<Cuenta>();
             cuentas = filtrarPorFecha(empresa.Cuentas.ToList());
             decimal numero = 0;
+            decimal parcial = 0;
             decimal total = 0;
             foreach (Cuenta cuentaActual in cuentas)
             {
-                total = evaluarIndicador(formulaIndicador, cuentaActual.Valor, cuentas);
-                cuentaActual.ValorConIndicador = total;
+                parcial = evaluarIndicador(formulaIndicador, cuentaActual.Valor, cuentas);
+                total += parcial;
+                cuentaActual.ValorConIndicador = parcial;
             }
 
             //Ordeno ascendiente por si es mediana
@@ -394,15 +396,15 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string Nombre, int indicador, string operacion, decimal valor, string Descripcion, string Opcion, Nullable<DateTime> Inicial, Nullable<DateTime> Final, Metodologia metodologia)
+        public ActionResult Edit(string Nombre, int indicador, string operacion, string valor, string Descripcion, string Opcion, Nullable<DateTime> Inicial, Nullable<DateTime> Final, Metodologia metodologia)
         {
             Metodologia metodologiaa = db.Metodologias.Find(metodologia.ID);
             metodologiaa.Nombre = Nombre;
             metodologiaa.Descripcion = Descripcion;
             if (Opcion != "")
-                metodologia.Formula = indicador + "/" + operacion + "/" + valor + "/" + Opcion;
+                metodologiaa.Formula = indicador + "/" + operacion + "/" + valor + "/" + Opcion;
             else
-                metodologia.Formula = indicador + "/" + operacion + "/" + valor;
+                metodologiaa.Formula = indicador + "/" + operacion + "/" + valor;
             //if (Inicial != null)
                 metodologiaa.FechaInicial = Inicial;
             //if (Final != null)
@@ -597,9 +599,7 @@ namespace Diseño.Controllers
                 SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
             }
 
-            return SumatoriaCuentasEmpresa;
+            return SumatoriaCuentasEmpresa + DeudaEmpresa(Cuentas);
         }
-
-
     }
 }

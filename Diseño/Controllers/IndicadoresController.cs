@@ -436,19 +436,8 @@ namespace Diseño.Controllers
             {
                 SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
             }
-            
-            return SumatoriaCuentasEmpresa;
-        }
 
-        public static decimal AplicarROE(List<Cuenta> Cuentas)
-        {
-            decimal SumatoriaCuentasEmpresa = TotalEmpresa(Cuentas);
-
-            if (SumatoriaCuentasEmpresa == 0) {
-                return 0;
-            }else { 
-            return (Cuentas[Cuentas.Count - 1].Valor / SumatoriaCuentasEmpresa);
-            }
+            return SumatoriaCuentasEmpresa + DeudaEmpresa(Cuentas);
         }
     }
 
