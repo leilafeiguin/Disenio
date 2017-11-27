@@ -198,6 +198,15 @@ namespace Diseño.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Cuenta cuenta = db.Cuentas.Find(id);
+            List<IndicadorCuentaValor> indicadorCuentaValorActual = new List<IndicadorCuentaValor>();
+            indicadorCuentaValorActual = db.IndicadorCuentaValores
+                                        .Where(icv => icv.Cuenta.ID == cuenta.ID).ToList();
+            if (indicadorCuentaValorActual.Count > 0) {
+                foreach (IndicadorCuentaValor icv in indicadorCuentaValorActual) {
+                    db.IndicadorCuentaValores.Remove(icv);
+                    db.SaveChanges();
+                }
+            }
             db.Cuentas.Remove(cuenta);
             db.SaveChanges();
             return RedirectToAction("Index");
