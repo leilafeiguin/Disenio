@@ -87,10 +87,31 @@ namespace Diseño.Controllers
                         int idEmpresaParaIndicador = Convert.ToInt32(todas.Cuentas[i].Empresa.ID);
                         cuentasParaIndicador = db.Cuentas
                             .Where(c => c.Empresa.ID == idEmpresaParaIndicador)
-                          .ToList();
+                          .ToList();                        
                     }
+                    Cuenta cuentaAux = new Cuenta();
+                    cuentaAux = cuentasParaIndicador[i];
+                    Indicador indicadorAux = new Indicador();
+                    indicadorAux = indicadorActual[0];
+                    List<IndicadorCuentaValor> indicadorCuentaValorActual = new List<IndicadorCuentaValor>();
+                    indicadorCuentaValorActual = db.IndicadorCuentaValores
+                                                .Where(icv => icv.Cuenta.ID == cuentaAux.ID && icv.Indicador.ID == indicadorAux.ID).ToList();
 
-                    todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada, cuentasParaIndicador);
+                    if (indicadorCuentaValorActual.Count > 0)
+                    {
+                        todas.Cuentas[i].ValorConIndicador = indicadorCuentaValorActual[0].Valor;
+                    }
+                    else {
+                        IndicadorCuentaValor indicadorCuentaValor = new IndicadorCuentaValor();
+                        todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada, cuentasParaIndicador);
+
+                        indicadorCuentaValor.Cuenta = cuentasParaIndicador[i];
+                        indicadorCuentaValor.Indicador = indicadorActual[0];
+                        indicadorCuentaValor.Valor = todas.Cuentas[i].ValorConIndicador;
+                        db.IndicadorCuentaValores.Add(indicadorCuentaValor);
+                        db.SaveChanges();
+                    }
+                    
                 }
                 
             }
