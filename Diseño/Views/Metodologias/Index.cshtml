@@ -17,9 +17,6 @@
             Nombre
         </th>
         <th>
-            Formula
-        </th>
-        <th>
             Descripcion
         </th>
         <th></th>
@@ -31,9 +28,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Formula)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Descripcion)
@@ -50,7 +44,6 @@
 
 <h2>Metodologias evaluadas en empresas</h2>
 
-Elegir una o dos empresas
 @using (Html.BeginForm("Index", "Metodologias", FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
 {
     <select id="MetodologiaSeleccionada" name="MetodologiaSeleccionada">
@@ -70,6 +63,9 @@ Elegir una o dos empresas
             <th>
                 Fecha de iniciación
             </th>
+            <th>
+                Valor Calculado
+            </th>
             <th></th>
         </tr>
 
@@ -81,6 +77,9 @@ Elegir una o dos empresas
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor)
                 </td>
             </tr>
         }

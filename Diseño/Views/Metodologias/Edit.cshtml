@@ -1,41 +1,90 @@
-﻿@model Diseño.Models.Metodologia
+﻿@model Diseño.Models.TodasLasClases
 
 @{
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
-
+<h2>Create</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Metodologia</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2">Nombre </label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                <input type="text" name="Nombre" value="@Model.Metodologias.First().Nombre" class="form-control" required />
             </div>
         </div>
+
         <div class="form-group">
-            @Html.LabelFor(model => model.Declaracion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2">Formula </label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Declaracion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Declaracion, "", new { @class = "text-danger" })
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <select id="indicador" class="form-control" name="indicador" required>
+                        <option value="">Seleccione un indicador</option>
+                        @foreach (var item in Model.Indicadores)
+                        {
+                            <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
+                        }
+                        <option value="0">Longevidad</option>
+                    </select>
+                </div>
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <select id="operacion" class="form-control" name="operacion" onchange="mostrarInput(this.value)" required>
+                        <option value="">Seleccione una operacion</option>
+                        <option value="Mayor">></option>
+                        <option value="Menor"><</option>
+                        <option value="Maximo">Maximo</option>
+                        <option value="Minimo">Minimo</option>
+                        <option value="Longevidad">Longevidad</option>
+                        <option value="Ascendiente">Ascendiente</option>
+                        <option value="Descendiente">Descendiente</option>
+                    </select>
+                </div>
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <select id="opcion" class="form-control" name="opcion" required>
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Sumatoria">Sumatoria</option>
+                        <option value="Promedio">Promedio</option>
+                        <option value="Mediana">Mediana</option>
+                    </select>
+                </div>
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <input type="number" step=any class="form-control" name="valor" id="input" style="display:none" required />
+                </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Período de tiempo (opcional)</label>
+            <div class="col-md-10">
+                <div class="col-md-4" style="padding-left: 0px;">
+                    <input type="date" class="form-control" value="@Model.Metodologias.First().FechaInicial" name="Inicial" id="FechaInicial" />
+                </div>
+                <div class="col-md-4" style="padding-left: 0px;">
+                    <input type="date" class="form-control" value="@Model.Metodologias.First().FechaFinal" name="Final" id="FechaFinal" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Descripcion </label>
+            <div class="col-md-10">
+                <input type="text" name="Descripcion" value="@Model.Metodologias.First().Descripcion" class="form-control" required />
+            </div>
+        </div>
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Guardar" class="btn btn-default" />
             </div>
         </div>
+
     </div>
 }
 
@@ -46,3 +95,29 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script>
+    (function() {
+        var formula = "@Model.Metodologias.First().Formula";
+        formula = formula.split('/');
+        document.getElementById("indicador").value = formula[0];
+        var operacion = document.getElementById("operacion");
+        operacion.value = formula[1];
+        if (operacion.value != "Maximo" && operacion.value != "Minimo") {
+            mostrarInput(operacion.value)
+        }
+        document.getElementById("input").value = formula[2];
+
+    })();
+    function mostrarInput(select) {
+        var input = document.getElementById("input");
+        if (select == "Maximo" || select == "Minimo") {
+            input.style.display = "none";
+            input.value = -1;
+        } else {
+            input.value = "";
+            input.style.display = "block";
+        }
+    }
+</script>
+

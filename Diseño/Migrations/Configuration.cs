@@ -9,7 +9,7 @@ namespace Diseño.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Diseño.DAL.DondeInviertoContext context)
