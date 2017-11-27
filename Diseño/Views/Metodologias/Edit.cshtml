@@ -47,15 +47,15 @@
                     </select>
                 </div>
                 <div class="col-md-3" style="padding-left: 0px;">
-                    <select id="opcion" class="form-control" name="opcion" required>
+                    <input type="number" step=any class="form-control" name="valor" id="input" style="display:none" required />
+                </div>
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <select id="Opcion" class="form-control" name="Opcion" style="display:none">
                         <option value="">Seleccione una opcion</option>
                         <option value="Sumatoria">Sumatoria</option>
                         <option value="Promedio">Promedio</option>
                         <option value="Mediana">Mediana</option>
                     </select>
-                </div>
-                <div class="col-md-3" style="padding-left: 0px;">
-                    <input type="number" step=any class="form-control" name="valor" id="input" style="display:none" required />
                 </div>
             </div>
         </div>
@@ -103,20 +103,25 @@
         document.getElementById("indicador").value = formula[0];
         var operacion = document.getElementById("operacion");
         operacion.value = formula[1];
-        if (operacion.value != "Maximo" && operacion.value != "Minimo") {
-            mostrarInput(operacion.value)
+        if (operacion.value == "Mayor" || operacion.value == "Menor") {
+            mostrarInput(operacion.value);
         }
         document.getElementById("input").value = formula[2];
+        document.getElementById("Opcion").value = formula[3];
 
     })();
     function mostrarInput(select) {
         var input = document.getElementById("input");
-        if (select == "Maximo" || select == "Minimo") {
-            input.style.display = "none";
-            input.value = -1;
-        } else {
+        var opcion = document.getElementById("Opcion");
+        if (select == "Mayor" || select == "Menor") {
             input.value = "";
             input.style.display = "block";
+            opcion.style.display = "block";
+        } else {
+            opcion.style.display = "none";
+            opcion.value = "";
+            input.style.display = "none";
+            input.value = -1;
         }
     }
 </script>

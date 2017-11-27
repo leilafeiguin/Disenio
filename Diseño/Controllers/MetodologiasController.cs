@@ -19,6 +19,7 @@ namespace Diseño.Controllers
         private DondeInviertoContext db = new DondeInviertoContext();
         private Nullable<DateTime> FechaInicialGlobal = new Nullable<DateTime>();
         private Nullable<DateTime> FechaFinalGlobal = new Nullable<DateTime>();
+        private string opcion; 
 
 
         // GET: Metodologias
@@ -48,16 +49,21 @@ namespace Diseño.Controllers
                 FechaFinalGlobal = metodologia.FechaFinal;
                 List<Empresa> empresas = new List<Empresa>();
                 string[] formulaSeparada = metodologia.Formula.Split('/');
+                string operacion = formulaSeparada[1];
+                int valor = Convert.ToInt32(formulaSeparada[2]);
                 string formulaIndicador = "";
-                if (formulaSeparada[0] != "0")
+                if (operacion != "Longevidad")
                 {
                     int idIndicador = Convert.ToInt32(formulaSeparada[0]);
                     formulaIndicador = db.Indicadores
                             .Where(c => c.ID == idIndicador)
                           .First().Formula;
                 }
-                string operacion = formulaSeparada[1];
-                int valor = Convert.ToInt32(formulaSeparada[2]);
+
+                opcion = "";
+                if (formulaSeparada.Length == 4)
+                    opcion = formulaSeparada[3];
+
                 switch (operacion)
                 {
                     case ("Menor"):
@@ -76,14 +82,13 @@ namespace Diseño.Controllers
                         empresas = Longevidad(valor);
                         break;
                     case ("Ascendiente"):
-                        empresas = CrecienteODecreciente(formulaIndicador, "Creciente", valor);
+                        empresas = CrecienteODecreciente(formulaIndicador, "Creciente");
                         break;
                     case ("Descendiente"):
-                        empresas = CrecienteODecreciente(formulaIndicador, "Decreciente", valor);
+                        empresas = CrecienteODecreciente(formulaIndicador, "Decreciente");
                         break;
                 }
                 todas.Empresas = empresas;
-
             }
             else
             {
@@ -106,6 +111,43 @@ namespace Diseño.Controllers
             //Asi es para ordenar Descendiente
             empresas.Sort((empresa1, empresa2) => -1 * empresa1.Fecha.CompareTo(empresa2.Fecha));
             return empresas;
+        }
+
+        public List<Empresa> CrecienteODecreciente(string formulaIndicador, string crecienteODecreciente)
+        {
+            List<Empresa> empresas = new List<Empresa>();
+            foreach (Empresa empresa in db.Empresas.ToList())
+            {
+                if (EmpresaEsCrecienteODecreciente(empresa, formulaIndicador, crecienteODecreciente))
+                    empresas.Add(empresa);
+            }
+            return empresas;
+
+        }
+
+        public bool EmpresaEsCrecienteODecreciente(Empresa empresa, string formulaIndicador, string crecienteODecreciente)
+        {
+            List<Cuenta> cuentas = new List<Cuenta>();
+            cuentas = filtrarPorFecha(empresa.Cuentas.ToList());
+            decimal numero = 0;
+            if (crecienteODecreciente.Equals("Decreciente"))
+                numero = 9999999;
+            for (int i = 0; i < cuentas.Count; i++)
+            {
+                decimal valorActual = evaluarIndicador(formulaIndicador, cuentas[i].Valor, cuentas);
+                if (crecienteODecreciente.Equals("Creciente"))
+                {
+                    if (valorActual < numero)
+                        return false;
+                }
+                else
+                {
+                    if (valorActual > numero)
+                        return false;
+                }
+                numero = valorActual;
+            }
+            return true;
         }
 
         public List<Empresa> Maximo(string formulaIndicador)
@@ -132,47 +174,6 @@ namespace Diseño.Controllers
             //Asi es para ordenar Ascendiente
             empresas.Sort((empresa1, empresa2) => empresa1.Valor.CompareTo(empresa2.Valor));
             return empresas;
-        }
-
-        public List<Empresa> CrecienteODecreciente(string formulaIndicador, string crecienteODecreciente, decimal vidas)
-        {
-            List<Empresa> empresas = new List<Empresa>();
-            foreach (Empresa empresa in db.Empresas.ToList())
-            {
-                if (EmpresaEsCrecienteODecreciente(empresa, formulaIndicador, crecienteODecreciente, vidas))
-                    empresas.Add(empresa);
-            }
-            return empresas;
-
-        }
-
-        public bool EmpresaEsCrecienteODecreciente(Empresa empresa, string formulaIndicador, string crecienteODecreciente, decimal vidas)
-        {
-            List<Cuenta> cuentas = new List<Cuenta>();
-            cuentas = filtrarPorFecha(empresa.Cuentas.ToList());
-            decimal numero = 0;
-            if (crecienteODecreciente.Equals("Decreciente"))
-                numero = 9999999;
-            for (int i = 0; i < cuentas.Count; i++)
-            {
-                decimal valorActual = evaluarIndicador(formulaIndicador, cuentas[i].Valor, cuentas);
-                if (crecienteODecreciente.Equals("Creciente"))
-                {
-                    if (valorActual < numero)
-                        vidas--;
-
-                }
-                else
-                {
-                    if (valorActual > numero)
-                        vidas--;
-                }
-                numero = valorActual;
-                if (vidas == 0)
-                    return false;
-            }
-
-            return true;
         }
 
         public decimal maximoOMinimoConIndicador(Empresa empresa, string formulaIndicador, string maximoOMinimo)
@@ -210,15 +211,27 @@ namespace Diseño.Controllers
             empresas = db.Empresas.ToList();
             foreach (Empresa empresa in empresas)
             {
-                comparador = masCuentas(empresa, formulaIndicador, operacion, valor);
+                if(opcion != ""){
+                    comparador = obtenerTotalConIndicador(empresa, formulaIndicador, operacion,valor);
+                }else{
+                    comparador = masCuentas(empresa, formulaIndicador, operacion, valor);
+                }
                 if (comparador != 0)
                 {
                     empresa.Valor = comparador;
                     empresasRetornar.Add(empresa);
                 }
             }
-            //Asi es para ordenar Descendiente
-            //empresas.Sort((empresa1, empresa2) => -1 * empresa1.Valor.CompareTo(empresa2.Valor));
+
+            if (operacion.Equals("Mayor"))
+            {
+                empresasRetornar.Sort((empresa1, empresa2) => -1 * empresa1.Valor.CompareTo(empresa2.Valor));
+            }
+            if (operacion.Equals("Menor"))
+            {
+                empresasRetornar.Sort((empresa1, empresa2) => empresa1.Valor.CompareTo(empresa2.Valor));
+            }
+
             return empresasRetornar;
         }
 
@@ -240,6 +253,47 @@ namespace Diseño.Controllers
                     if (valorActual < valor)
                         numero = valorActual;
                 }
+            }
+
+            return numero;
+        }
+
+        public decimal obtenerTotalConIndicador(Empresa empresa, string formulaIndicador, string operacion, decimal valor)
+        {
+            List<Cuenta> cuentas = new List<Cuenta>();
+            cuentas = filtrarPorFecha(empresa.Cuentas.ToList());
+            decimal numero = 0;
+            decimal total = 0;
+            foreach (Cuenta cuentaActual in cuentas)
+            {
+                total = evaluarIndicador(formulaIndicador, cuentaActual.Valor, cuentas);
+                cuentaActual.ValorConIndicador = total;
+            }
+
+            //Ordeno ascendiente por si es mediana
+            cuentas.Sort((cuenta1, cuenta2) => cuenta1.ValorConIndicador.CompareTo(cuenta2.Valor));
+
+            if (opcion.Equals("Promedio"))
+                total = total / cuentas.Count;
+
+            if (opcion.Equals("Mediana"))
+            { 
+                //Si es par
+                if(cuentas.Count % 2 == 0)
+                    total = (cuentas[cuentas.Count / 2].ValorConIndicador + cuentas[(cuentas.Count / 2) - 1].ValorConIndicador) / 2;
+                else
+                    total = cuentas[(cuentas.Count - 1) / 2].ValorConIndicador;
+            }
+
+            if (operacion.Equals("Mayor"))
+            {
+                if (total > valor)
+                    numero = total;
+            }
+            if (operacion.Equals("Menor"))
+            {
+                if (total < valor)
+                    numero = total;
             }
 
             return numero;
@@ -294,12 +348,15 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string Nombre, int indicador, string operacion, string valor, string Descripcion, Nullable<DateTime> Inicial, Nullable<DateTime> Final)
+        public ActionResult Create(string Nombre, int indicador, string operacion, string valor, string Descripcion, string Opcion, Nullable<DateTime> Inicial, Nullable<DateTime> Final)
         {
             Metodologia metodologia = new Metodologia();
             metodologia.Nombre = Nombre;
             metodologia.Descripcion = Descripcion;
-            metodologia.Formula = indicador + "/" + operacion + "/" + valor;
+            if (Opcion != "")
+                metodologia.Formula = indicador + "/" + operacion + "/" + valor + "/" + Opcion;
+            else
+                metodologia.Formula = indicador + "/" + operacion + "/" + valor;
             metodologia.FechaInicial = Inicial;
             metodologia.FechaFinal = Final;
 
@@ -337,12 +394,15 @@ namespace Diseño.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string Nombre, int indicador, string operacion, decimal valor, string Descripcion, Nullable<DateTime> Inicial, Nullable<DateTime> Final, Metodologia metodologia)
+        public ActionResult Edit(string Nombre, int indicador, string operacion, decimal valor, string Descripcion, string Opcion, Nullable<DateTime> Inicial, Nullable<DateTime> Final, Metodologia metodologia)
         {
             Metodologia metodologiaa = db.Metodologias.Find(metodologia.ID);
             metodologiaa.Nombre = Nombre;
             metodologiaa.Descripcion = Descripcion;
-            metodologiaa.Formula = indicador + "/" + operacion + "/" + valor;
+            if (Opcion != "")
+                metodologia.Formula = indicador + "/" + operacion + "/" + valor + "/" + Opcion;
+            else
+                metodologia.Formula = indicador + "/" + operacion + "/" + valor;
             //if (Inicial != null)
                 metodologiaa.FechaInicial = Inicial;
             //if (Final != null)
