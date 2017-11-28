@@ -50,7 +50,7 @@ namespace Diseño.Controllers
                 List<Empresa> empresas = new List<Empresa>();
                 string[] formulaSeparada = metodologia.Formula.Split('/');
                 string operacion = formulaSeparada[1];
-                decimal valor = Convert.ToDecimal(formulaSeparada[2]);
+                decimal valor = Convert.ToDecimal(formulaSeparada[2].Replace(".", ","));
                 string formulaIndicador = "";
                 if (operacion != "Longevidad")
                 {
