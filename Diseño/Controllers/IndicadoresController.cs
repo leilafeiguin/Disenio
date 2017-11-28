@@ -193,7 +193,7 @@ namespace Diseño.Controllers
                     }
                 }
 
-                if (IndicadorEnIndicador == "ValorCuenta" || IndicadorEnIndicador == "TotalEmpresa" || IndicadorEnIndicador == "DeudaEmpresa")
+                if (IndicadorEnIndicador == "ValorCuenta" || IndicadorEnIndicador == "TotalEmpresa" || IndicadorEnIndicador == "DeudaEmpresa" || IndicadorEnIndicador == "PatrimonioNeto" || IndicadorEnIndicador == "InversionesEmpresa")
                 {
                     return true;
                 }
@@ -323,6 +323,16 @@ namespace Diseño.Controllers
                         Parametros[numParametro] = DeudaEmpresa(Cuentas);
                         numParametro++;
                     }
+                    else if (IndicadorEnIndicador == "PatrimonioNeto")
+                    {
+                        Parametros[numParametro] = PatrimonioNeto(Cuentas);
+                        numParametro++;
+                    }
+                    else if (IndicadorEnIndicador == "InversionesEmpresa")
+                    {
+                        Parametros[numParametro] = InversionesEmpresa(Cuentas.First().Empresa);
+                        numParametro++;
+                    }
                     else
                     {//OTRO INDICADOR
                         List<Indicador> OtrosIndicadores = db.Indicadores
@@ -418,7 +428,7 @@ namespace Diseño.Controllers
             }
         }
 
-        public static decimal DeudaEmpresa(List<Cuenta> Cuentas)
+        public decimal DeudaEmpresa(List<Cuenta> Cuentas)
         {
             decimal SumatoriaDeudaEmpresa = 0;
             for (int i = 0; i < Cuentas.Count; i++)
@@ -429,15 +439,27 @@ namespace Diseño.Controllers
             return SumatoriaDeudaEmpresa;
         }
 
-        public static decimal TotalEmpresa(List<Cuenta> Cuentas)
+        public decimal TotalEmpresa(List<Cuenta> Cuentas)
         {
-            decimal SumatoriaCuentasEmpresa = 0;
+            return PatrimonioNeto(Cuentas) + DeudaEmpresa(Cuentas);
+        }
+
+        public decimal InversionesEmpresa(Empresa empresa)
+        {
+            return empresa.Inversiones;
+        }
+
+        public decimal PatrimonioNeto(List<Cuenta> Cuentas)
+        {
+            Indicador indicadorActual = new Indicador();
+            indicadorActual = db.Indicadores.Where(c => c.Nombre.Equals("IngresoNeto")).First();
+            decimal SumatoriaNEtoEmpresa = 0;
             for (int i = 0; i < Cuentas.Count; i++)
             {
-                SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
+                SumatoriaNEtoEmpresa += evaluarIndicador(indicadorActual.Formula, Cuentas[i].Valor, Cuentas);
             }
 
-            return SumatoriaCuentasEmpresa + DeudaEmpresa(Cuentas);
+            return SumatoriaNEtoEmpresa;
         }
     }
 

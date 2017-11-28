@@ -17,8 +17,11 @@
         <p>
             La fórmula debe tener el siguiente formato: <br>
             Los indicadores deben ser ingresados entre llaves. Ejemplo: {Ingreso Bruto} <br>
-            Los operadores con las primeras tres letras y en mayúscula, es decir, SUM, RES, MUL o DIV.<br>
-            Los operadores entre símbolos '+' y las primeras tres letras en mayúscula. Ejemplo: 1+SUM+2
+            Los valores de cuenta deben ser ingresados entre llaves de esta manera: {ValorCuenta} <br>
+            El patrimonio neto de la empresa se llama asi: {PatrimonioNeto} <br>
+            El pasivo total de la empresa se llama asi: {DeudaEmpresa} <br>
+            Los operadores separados entre espacios. Los permitidos son los siguientes: + - / *<br>
+            Los decimales se escriben con coma. Por ejemplo: 0,5<br>
         </p>
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)

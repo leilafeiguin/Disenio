@@ -194,6 +194,10 @@
     <Compile Include="Migrations\201711271853437_PrecalculoIndicadores.Designer.cs">
       <DependentUpon>201711271853437_PrecalculoIndicadores.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711281242252_inversiones.cs" />
+    <Compile Include="Migrations\201711281242252_inversiones.Designer.cs">
+      <DependentUpon>201711281242252_inversiones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Cuenta.cs" />
@@ -338,6 +342,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711271853437_PrecalculoIndicadores.resx">
       <DependentUpon>201711271853437_PrecalculoIndicadores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711281242252_inversiones.resx">
+      <DependentUpon>201711281242252_inversiones.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

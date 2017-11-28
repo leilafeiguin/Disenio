@@ -18,6 +18,7 @@ namespace Diseño.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { get; set; }
+        public decimal Inversiones { get; set; }
 
         [NotMapped]
         public decimal Valor { get; set; }
