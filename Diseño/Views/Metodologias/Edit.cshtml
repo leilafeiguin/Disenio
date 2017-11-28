@@ -64,7 +64,7 @@
             <label class="control-label col-md-2">Período de tiempo (opcional)</label>
             <div class="col-md-10">
                 <div class="col-md-4" style="padding-left: 0px;">
-                    <input type="date" class="form-control" value="@Model.Metodologias.First().FechaInicial" name="Inicial" id="FechaInicial" />
+                    <input type="date" class="form-control" name="Inicial" id="FechaInicial" />
                 </div>
                 <div class="col-md-4" style="padding-left: 0px;">
                     <input type="date" class="form-control" value="@Model.Metodologias.First().FechaFinal" name="Final" id="FechaFinal" />
@@ -109,7 +109,21 @@
         document.getElementById("input").value = formula[2];
         document.getElementById("Opcion").value = formula[3];
 
+        insertarFecha("@Model.Metodologias.First().FechaInicial", "FechaInicial");
+        insertarFecha("@Model.Metodologias.First().FechaFinal", "FechaFinal");
+        
+
     })();
+
+    function insertarFecha(fechaBD, id) {
+        if (fechaBD) {
+            var fechaInicial = fechaBD.split(' ');
+            var fecha = fechaInicial[0].split('/');
+            fecha = fecha[2] + "-" + fecha[1] + "-" + fecha[0];
+            document.getElementById(id).value = fecha;
+        }
+    }
+
     function mostrarInput(select) {
         var input = document.getElementById("input");
         var opcion = document.getElementById("Opcion");

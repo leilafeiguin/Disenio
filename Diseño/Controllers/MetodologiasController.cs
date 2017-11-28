@@ -273,7 +273,7 @@ namespace Diseño.Controllers
             }
 
             //Ordeno ascendiente por si es mediana
-            cuentas.Sort((cuenta1, cuenta2) => cuenta1.ValorConIndicador.CompareTo(cuenta2.Valor));
+            cuentas.Sort((cuenta1, cuenta2) => cuenta1.ValorConIndicador.CompareTo(cuenta2.ValorConIndicador));
 
             if (opcion.Equals("Promedio"))
                 total = total / cuentas.Count;
