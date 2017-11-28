@@ -100,6 +100,7 @@ namespace Diseño.Controllers
                     if (indicadorCuentaValorActual.Count > 0)
                     {
                         todas.Cuentas[i].ValorConIndicador = indicadorCuentaValorActual[0].Valor;
+                        indicadorCuentaValorActual = null;
                     }
                     else {
                         IndicadorCuentaValor indicadorCuentaValor = new IndicadorCuentaValor();
