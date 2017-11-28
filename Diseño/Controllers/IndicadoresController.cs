@@ -78,7 +78,7 @@ namespace Diseño.Controllers
                     decimal ValorCuentaSeleccionada = todas.Cuentas[i].Valor;
                     string FormulaIndicadorSeleccionado = indicadorActual[0].Formula;
 
-                    if (EmpresaSeleccionada != "")
+                    if (EmpresaSeleccionada == "")
                     {
                         cuentasParaIndicador = todas.Cuentas;
                     }
