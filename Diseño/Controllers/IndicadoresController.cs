@@ -150,9 +150,7 @@ namespace Diseño.Controllers
         public ActionResult Create([Bind(Include = "ID,Nombre,Formula,Descripcion,Tipo")] Indicador indicador)
         {
             //Evaluar estructurura formula
-            //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
-            //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
-            Match match = Regex.Match(indicador.Formula, @"(^({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?$)");
+            Match match = Regex.Match(indicador.Formula, @"(^(({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?)|(sum\(\[(.*)+],.*\))$)");
             if (match.Success  && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
                 if (ModelState.IsValid)
@@ -179,7 +177,42 @@ namespace Diseño.Controllers
 
         public bool ValidarTextoIndicador(string formula)
         {
-            if (formula.Contains('{') && formula.Contains('}'))
+            if (formula.Contains("sum(")){
+                string Cuentas = GetSubstringByString("sum([", "],", formula);
+                string IndicadorFormula = GetSubstringByString("],", ")", formula);
+                List<Indicador> indicadores = new List<Indicador>();
+                indicadores = db.Indicadores.ToList();
+
+                foreach (Indicador i in indicadores)
+                {
+                    if (i.Nombre.Equals(IndicadorFormula))
+                    {
+                        //el Indicador es correcto ahora falta que todas las cuentas sean correctas
+                        char[] todasLasCuentas = Cuentas.Split(",");
+                        List<Cuenta> dbCuentas = new List<Cuenta>();
+                        foreach (unaCuenta in todasLasCuentas)
+                        {
+                            //hay que consultar a la base en busca de una cuenta con nombre igual a unaCuenta si no hay return false    
+                        }
+                        return true;
+
+                    }
+                }
+
+                if (IndicadorFormula == "ValorCuenta" || IndicadorFormula == "TotalEmpresa" || IndicadorFormula == "DeudaEmpresa" || IndicadorFormula == "PatrimonioNeto" || IndicadorFormula == "InversionesEmpresa")
+                {
+                    //el Indicador es correcto ahora falta que todas las cuentas sean correctas
+                    char[] todasLasCuentas = Cuentas.Split(",");
+                    List<Cuenta> dbCuentas = new List<Cuenta>();
+                    foreach (unaCuenta in todasLasCuentas)
+                    {
+                        //hay que consultar a la base en busca de una cuenta con nombre igual a unaCuenta si no hay return false    
+                    }
+                    return true;
+                }
+
+            }
+            else if (formula.Contains('{') && formula.Contains('}'))
             {
                 string IndicadorEnIndicador = GetSubstringByString("{", "}", formula);
 
@@ -230,9 +263,7 @@ namespace Diseño.Controllers
         public ActionResult Edit([Bind(Include = "ID,Nombre,Formula,Descripcion,Tipo")] Indicador indicador)
         {
             //Evaluar estructurura formula
-            //Acepta punto: ({.*} |[0-9]+(\.[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\.[0-9]+)?))+)?
-            //Acepta coma: ({.*} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {.*}| [0-9]+(\,[0-9]+)?))+)?
-            Match match = Regex.Match(indicador.Formula, @"(^({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?$)");
+            Match match = Regex.Match(indicador.Formula, @"(^(({[A-Za-z0-9]+} |[0-9]+(\,[0-9]+)? )(\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?)(( (\+|\-|\*|\/)( {[A-Za-z0-9]+}| [0-9]+(\,[0-9]+)?))+)?)|(sum\(\[(.*)+],.*\))$)");
             if (match.Success && ValidarTextoIndicador(indicador.Formula) && (!indicador.Nombre.Contains(' ')))
             {
                 if (ModelState.IsValid)
