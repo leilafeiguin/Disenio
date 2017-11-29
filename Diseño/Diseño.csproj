@@ -311,6 +311,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Disenio\" />
+    <Folder Include="Test\" />
     <Folder Include="Uploads\" />
     <Folder Include="Views\MetodologiaEmpresa\" />
   </ItemGroup>
