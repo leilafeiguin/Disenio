@@ -186,12 +186,25 @@
     <Compile Include="Migrations\201711212008478_donde_invierto_migration.Designer.cs">
       <DependentUpon>201711212008478_donde_invierto_migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711221741566_newMigration.cs" />
+    <Compile Include="Migrations\201711221741566_newMigration.Designer.cs">
+      <DependentUpon>201711221741566_newMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711271853437_PrecalculoIndicadores.cs" />
+    <Compile Include="Migrations\201711271853437_PrecalculoIndicadores.Designer.cs">
+      <DependentUpon>201711271853437_PrecalculoIndicadores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711281242252_inversiones.cs" />
+    <Compile Include="Migrations\201711281242252_inversiones.Designer.cs">
+      <DependentUpon>201711281242252_inversiones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Cuenta.cs" />
     <Compile Include="Models\Empresa.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Indicador.cs" />
+    <Compile Include="Models\IndicadorCuentaValor.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\Metodologia.cs" />
     <Compile Include="Models\TodasLasClases.cs" />
@@ -313,7 +326,6 @@
     <Folder Include="Disenio\" />
     <Folder Include="Test\" />
     <Folder Include="Uploads\" />
-    <Folder Include="Views\MetodologiaEmpresa\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -325,6 +337,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201711212008478_donde_invierto_migration.resx">
       <DependentUpon>201711212008478_donde_invierto_migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711221741566_newMigration.resx">
+      <DependentUpon>201711221741566_newMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711271853437_PrecalculoIndicadores.resx">
+      <DependentUpon>201711271853437_PrecalculoIndicadores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711281242252_inversiones.resx">
+      <DependentUpon>201711281242252_inversiones.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

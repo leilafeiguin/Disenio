@@ -16,6 +16,7 @@ namespace Diseño.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { get; set; }
         public decimal Valor { get; set; }
+        public decimal PasivoCirculante { get; set; }
 
         [NotMapped]
         public decimal ValorConIndicador { get; set; }

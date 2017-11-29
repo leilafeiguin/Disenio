@@ -33,36 +33,36 @@ namespace Diseño.Controllers
             todas.Indicadores = db.Indicadores.ToList();
             todas.Empresas = db.Empresas.ToList();
             List<Cuenta> cuentasParaIndicador = new List<Cuenta>();
+            List<Cuenta> cuentasDelaEmpresa = new List<Cuenta>();
 
             //if (EmpresaSeleccionada != null)
             if (EmpresaSeleccionada != "")
             {
-                List<Cuenta> cuentasDelaEmpresa = new List<Cuenta>();
-                List<Cuenta> cuentasEnFecha = new List<Cuenta>();
-
                 int IDEmpresaSeleccionada = Convert.ToInt32(EmpresaSeleccionada);
                 cuentasDelaEmpresa = db.Cuentas
                         .Where(c => c.Empresa.ID == IDEmpresaSeleccionada)
                       .ToList();
-
-                if (FechaInicial != null && FechaFinal != null && FechaInicial <= FechaFinal)
-                {
-                    foreach (Cuenta cuentaActual in cuentasDelaEmpresa)
-                    {
-                        if ((cuentaActual.Fecha >= FechaInicial) && (cuentaActual.Fecha <= FechaFinal))
-                        {
-                            cuentasEnFecha.Add(cuentaActual);
-                        }
-                    }
-                    todas.Cuentas = cuentasEnFecha;
-                }
-                else
-                {
-                    todas.Cuentas = cuentasDelaEmpresa;
-                }
             }
             else {
-                todas.Cuentas = db.Cuentas.ToList();
+                cuentasDelaEmpresa = db.Cuentas.ToList();
+            }
+
+            //Aca filtro por fechas
+            if (FechaInicial != null && FechaFinal != null && FechaInicial <= FechaFinal)
+            {
+                List<Cuenta> cuentasEnFecha = new List<Cuenta>();
+                foreach (Cuenta cuentaActual in cuentasDelaEmpresa)
+                {
+                    if ((cuentaActual.Fecha >= FechaInicial) && (cuentaActual.Fecha <= FechaFinal))
+                    {
+                        cuentasEnFecha.Add(cuentaActual);
+                    }
+                }
+                todas.Cuentas = cuentasEnFecha;
+            }
+            else
+            {
+                todas.Cuentas = cuentasDelaEmpresa;
             }
 
             //Aca Evaluo los Indicadores
@@ -78,7 +78,7 @@ namespace Diseño.Controllers
                     decimal ValorCuentaSeleccionada = todas.Cuentas[i].Valor;
                     string FormulaIndicadorSeleccionado = indicadorActual[0].Formula;
 
-                    if (EmpresaSeleccionada != "")
+                    if (EmpresaSeleccionada == "")
                     {
                         cuentasParaIndicador = todas.Cuentas;
                     }
@@ -87,10 +87,32 @@ namespace Diseño.Controllers
                         int idEmpresaParaIndicador = Convert.ToInt32(todas.Cuentas[i].Empresa.ID);
                         cuentasParaIndicador = db.Cuentas
                             .Where(c => c.Empresa.ID == idEmpresaParaIndicador)
-                          .ToList();
+                          .ToList();                        
                     }
+                    Cuenta cuentaAux = new Cuenta();
+                    cuentaAux = cuentasParaIndicador[i];
+                    Indicador indicadorAux = new Indicador();
+                    indicadorAux = indicadorActual[0];
+                    List<IndicadorCuentaValor> indicadorCuentaValorActual = new List<IndicadorCuentaValor>();
+                    indicadorCuentaValorActual = db.IndicadorCuentaValores
+                                                .Where(icv => icv.Cuenta.ID == cuentaAux.ID && icv.Indicador.ID == indicadorAux.ID).ToList();
 
-                    todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada, cuentasParaIndicador);
+                    if (indicadorCuentaValorActual.Count > 0)
+                    {
+                        todas.Cuentas[i].ValorConIndicador = indicadorCuentaValorActual[0].Valor;
+                        indicadorCuentaValorActual = null;
+                    }
+                    else {
+                        IndicadorCuentaValor indicadorCuentaValor = new IndicadorCuentaValor();
+                        todas.Cuentas[i].ValorConIndicador = evaluarIndicador(FormulaIndicadorSeleccionado, ValorCuentaSeleccionada, cuentasParaIndicador);
+
+                        indicadorCuentaValor.Cuenta = cuentasParaIndicador[i];
+                        indicadorCuentaValor.Indicador = indicadorActual[0];
+                        indicadorCuentaValor.Valor = todas.Cuentas[i].ValorConIndicador;
+                        db.IndicadorCuentaValores.Add(indicadorCuentaValor);
+                        db.SaveChanges();
+                    }
+                    
                 }
                 
             }
@@ -98,122 +120,6 @@ namespace Diseño.Controllers
             return View(todas);
             //return RedirectToAction("Index");
         }
-
-        public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada, List<Cuenta> Cuentas)
-        {
-            decimal[] Parametros = { 0, 0 };
-            string[] formulaSeparada = FormulaIndicadorSeleccionado.Split();
-            char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
-            int numParametro = 0;
-
-            for (int k = 0; k < formulaSeparada.Length; k += 2)
-            {
-                if (formulaSeparada[k].Contains("{") && formulaSeparada[k].Contains("}"))
-                {
-                    string IndicadorEnIndicador = formulaSeparada[k].Replace("{", "");
-                    IndicadorEnIndicador = IndicadorEnIndicador.Replace("}", "");
-                    if (IndicadorEnIndicador == "ValorCuenta")
-                    {
-                        Parametros[numParametro] = ValorCuentaSeleccionada;
-                        numParametro++;
-                    }
-                    else if (IndicadorEnIndicador == "TotalEmpresa")
-                    {
-                        Parametros[numParametro] = TotalEmpresa(Cuentas);
-                        numParametro++;
-                    }
-                    else
-                    {//OTRO INDICADOR
-                        List<Indicador> OtrosIndicadores = db.Indicadores
-                                .Where(c => c.Nombre == IndicadorEnIndicador)
-                                .ToList();
-                        string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
-                        Parametros[numParametro] = evaluarIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada, Cuentas);
-                        numParametro++;
-                    }
-                }
-                else
-                {
-                    Parametros[numParametro] = Convert.ToDecimal(formulaSeparada[k]);
-                    numParametro++;
-                }
-            }
-            int numOperador = 0;
-            for (int k = 1; k < formulaSeparada.Length; k += 2)
-            {
-
-                switch (formulaSeparada[k])
-                {
-                    case ("+"):
-                        Operadores[numOperador] = '+';
-                        numOperador++;
-                        break;
-                    case ("-"):
-                        Operadores[numOperador] = '-';
-                        numOperador++;
-                        break;
-                    case ("*"):
-                        Operadores[numOperador] = '*';
-                        numOperador++;
-                        break;
-                    case ("/"):
-                        Operadores[numOperador] = '/';
-                        numOperador++;
-                        break;
-                }
-            }
-            return AplicarFormula(Operadores, Parametros);
-        }
-
-
-        public decimal AplicarFormula(char[] Operadores, decimal[] Parametros)
-        {
-            while (tieneMultiplicacionODivision(Operadores)){
-                for (int j = 0; j < Operadores.Length; j++)
-                {
-                    if (Operadores[j] == '*')
-                    {
-                        Parametros[j] = (Parametros[j] * Parametros[j + 1]);
-                        Parametros = Parametros.Where((source, index) => index != j+1).ToArray();
-                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
-                    }
-                    else if (Operadores[j] == '/')
-                    {
-                        Parametros[j] = (Parametros[j] / Parametros[j + 1]);
-                        Parametros = Parametros.Where((source, index) => index != j+1).ToArray();
-                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
-                    }
-                }            
-            }
-            
-            for (int z = 0; z < Operadores.Length; z++)
-            {
-                if (Operadores[z] == '+')
-                {
-                    Parametros[z] = (Parametros[z] + Parametros[z + 1]);
-                    Parametros = Parametros.Where((source, index) => index != z+1).ToArray();
-                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
-                }
-                else if (Operadores[z] == '-')
-                {
-                    Parametros[z] = (Parametros[z] - Parametros[z + 1]);
-                    Parametros = Parametros.Where((source, index) => index != z+1).ToArray();
-                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
-                }
-            }
-            return Parametros[0];
-        }
-
-        bool tieneMultiplicacionODivision(char[] Operadores){
-            if (Operadores.Contains('*') || Operadores.Contains('/'))
-            {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-      
 
         // GET: Indicadores/Details/5
         public ActionResult Details(int? id)
@@ -288,7 +194,7 @@ namespace Diseño.Controllers
                     }
                 }
 
-                if (IndicadorEnIndicador == "ValorCuenta" || IndicadorEnIndicador == "TotalEmpresa")
+                if (IndicadorEnIndicador == "ValorCuenta" || IndicadorEnIndicador == "TotalEmpresa" || IndicadorEnIndicador == "DeudaEmpresa" || IndicadorEnIndicador == "PatrimonioNeto" || IndicadorEnIndicador == "InversionesEmpresa")
                 {
                     return true;
                 }
@@ -390,28 +296,171 @@ namespace Diseño.Controllers
 
         }
 
-        public static decimal TotalEmpresa(List<Cuenta> Cuentas)
+        public decimal evaluarIndicador(string FormulaIndicadorSeleccionado, decimal ValorCuentaSeleccionada, List<Cuenta> Cuentas)
         {
-            decimal SumatoriaCuentasEmpresa = 0;
-            for (int i = 0; i < Cuentas.Count; i++)
+            decimal[] Parametros = { 0, 0 };
+            string[] formulaSeparada = FormulaIndicadorSeleccionado.Split();
+            char[] Operadores = new char[(formulaSeparada.Length - 1) / 2];
+            int numParametro = 0;
+
+            for (int k = 0; k < formulaSeparada.Length; k += 2)
             {
-                SumatoriaCuentasEmpresa = SumatoriaCuentasEmpresa + Cuentas[i].Valor;
+                if (formulaSeparada[k].Contains("{") && formulaSeparada[k].Contains("}"))
+                {
+                    string IndicadorEnIndicador = formulaSeparada[k].Replace("{", "");
+                    IndicadorEnIndicador = IndicadorEnIndicador.Replace("}", "");
+                    if (IndicadorEnIndicador == "ValorCuenta")
+                    {
+                        Parametros[numParametro] = ValorCuentaSeleccionada;
+                        numParametro++;
+                    }
+                    else if (IndicadorEnIndicador == "TotalEmpresa")
+                    {
+                        Parametros[numParametro] = TotalEmpresa(Cuentas);
+                        numParametro++;
+                    }
+                    else if (IndicadorEnIndicador == "DeudaEmpresa")
+                    {
+                        Parametros[numParametro] = DeudaEmpresa(Cuentas);
+                        numParametro++;
+                    }
+                    else if (IndicadorEnIndicador == "PatrimonioNeto")
+                    {
+                        Parametros[numParametro] = PatrimonioNeto(Cuentas);
+                        numParametro++;
+                    }
+                    else if (IndicadorEnIndicador == "InversionesEmpresa")
+                    {
+                        Parametros[numParametro] = InversionesEmpresa(Cuentas.First().Empresa);
+                        numParametro++;
+                    }
+                    else
+                    {//OTRO INDICADOR
+                        List<Indicador> OtrosIndicadores = db.Indicadores
+                                .Where(c => c.Nombre == IndicadorEnIndicador)
+                                .ToList();
+                        string FormulaOtroIndicador = OtrosIndicadores[0].Formula;
+                        Parametros[numParametro] = evaluarIndicador(FormulaOtroIndicador, ValorCuentaSeleccionada, Cuentas);
+                        numParametro++;
+                    }
+                }
+                else
+                {
+                    Parametros[numParametro] = Convert.ToDecimal(formulaSeparada[k]);
+                    numParametro++;
+                }
             }
-            
-            return SumatoriaCuentasEmpresa;
-            
+            int numOperador = 0;
+            for (int k = 1; k < formulaSeparada.Length; k += 2)
+            {
+
+                switch (formulaSeparada[k])
+                {
+                    case ("+"):
+                        Operadores[numOperador] = '+';
+                        numOperador++;
+                        break;
+                    case ("-"):
+                        Operadores[numOperador] = '-';
+                        numOperador++;
+                        break;
+                    case ("*"):
+                        Operadores[numOperador] = '*';
+                        numOperador++;
+                        break;
+                    case ("/"):
+                        Operadores[numOperador] = '/';
+                        numOperador++;
+                        break;
+                }
+            }
+            return AplicarFormula(Operadores, Parametros);
         }
 
-        public static decimal AplicarROE(List<Cuenta> Cuentas)
+
+        public decimal AplicarFormula(char[] Operadores, decimal[] Parametros)
         {
-
-            decimal SumatoriaCuentasEmpresa = TotalEmpresa(Cuentas);
-
-            if (SumatoriaCuentasEmpresa == 0) {
-                return 0;
-            }else { 
-            return (Cuentas[Cuentas.Count - 1].Valor / SumatoriaCuentasEmpresa);
+            while (tieneMultiplicacionODivision(Operadores))
+            {
+                for (int j = 0; j < Operadores.Length; j++)
+                {
+                    if (Operadores[j] == '*')
+                    {
+                        Parametros[j] = (Parametros[j] * Parametros[j + 1]);
+                        Parametros = Parametros.Where((source, index) => index != j + 1).ToArray();
+                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
+                    }
+                    else if (Operadores[j] == '/')
+                    {
+                        Parametros[j] = (Parametros[j] / Parametros[j + 1]);
+                        Parametros = Parametros.Where((source, index) => index != j + 1).ToArray();
+                        Operadores = Operadores.Where((source, index) => index != j).ToArray();
+                    }
+                }
             }
+
+            for (int z = 0; z < Operadores.Length; z++)
+            {
+                if (Operadores[z] == '+')
+                {
+                    Parametros[z] = (Parametros[z] + Parametros[z + 1]);
+                    Parametros = Parametros.Where((source, index) => index != z + 1).ToArray();
+                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
+                }
+                else if (Operadores[z] == '-')
+                {
+                    Parametros[z] = (Parametros[z] - Parametros[z + 1]);
+                    Parametros = Parametros.Where((source, index) => index != z + 1).ToArray();
+                    Operadores = Operadores.Where((source, index) => index != z).ToArray();
+                }
+            }
+            return Parametros[0];
+        }
+
+        bool tieneMultiplicacionODivision(char[] Operadores)
+        {
+            if (Operadores.Contains('*') || Operadores.Contains('/'))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public decimal DeudaEmpresa(List<Cuenta> Cuentas)
+        {
+            decimal SumatoriaDeudaEmpresa = 0;
+            for (int i = 0; i < Cuentas.Count; i++)
+            {
+                SumatoriaDeudaEmpresa = SumatoriaDeudaEmpresa + Cuentas[i].PasivoCirculante;
+            }
+
+            return SumatoriaDeudaEmpresa;
+        }
+
+        public decimal TotalEmpresa(List<Cuenta> Cuentas)
+        {
+            return PatrimonioNeto(Cuentas) + DeudaEmpresa(Cuentas);
+        }
+
+        public decimal InversionesEmpresa(Empresa empresa)
+        {
+            return empresa.Inversiones;
+        }
+
+        public decimal PatrimonioNeto(List<Cuenta> Cuentas)
+        {
+            Indicador indicadorActual = new Indicador();
+            indicadorActual = db.Indicadores.Where(c => c.Nombre.Equals("IngresoNeto")).First();
+            decimal SumatoriaNEtoEmpresa = 0;
+            for (int i = 0; i < Cuentas.Count; i++)
+            {
+                SumatoriaNEtoEmpresa += evaluarIndicador(indicadorActual.Formula, Cuentas[i].Valor, Cuentas);
+            }
+
+            return SumatoriaNEtoEmpresa;
         }
     }
 

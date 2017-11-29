@@ -20,6 +20,7 @@ namespace Diseño.DAL
         public DbSet<Empresa> Empresas { get; set; }
         public DbSet<Metodologia> Metodologias { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<IndicadorCuentaValor> IndicadorCuentaValores { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -24,46 +24,68 @@
         <div class="form-group">
             <label class="control-label col-md-2">Formula </label>
             <div class="col-md-10">
-                <div class="col-md-4" style="padding-left: 0px;">
+                <div class="col-md-3" style="padding-left: 0px;">
                     <select id="indicador" class="form-control" name="indicador" required>
                         <option value="">Seleccione un indicador</option>
                         @foreach (var item in Model.Indicadores)
                         {
                             <option value="@item.ID">@Html.DisplayFor(model => item.Nombre)</option>
                         }
+                        <option value="0">Longevidad</option>
                     </select>
                 </div>
-                <div class="col-md-4" style="padding-left: 0px;">
+                <div class="col-md-3" style="padding-left: 0px;">
                     <select id="operacion" class="form-control" name="operacion" onchange="mostrarInput(this.value)" required>
                         <option value="">Seleccione una operacion</option>
-                        <option>></option>
-                        <option><</option>
-                        <option>Maximo</option>
-                        <option>Minimo</option>
-                        <option>Ascendiente</option>
-                        <option>Descendiente</option>
+                        <option value="Mayor">></option>
+                        <option value="Menor"><</option>
+                        <option value="Maximo">Maximo</option>
+                        <option value="Minimo">Minimo</option>
+                        <option value="Longevidad">Longevidad</option>
+                        <option value="Ascendiente">Ascendiente</option>
+                        <option value="Descendiente">Descendiente</option>
                     </select>
                 </div>
-                <div class="col-md-4" style="padding-left: 0px;">
-                    <input type="number" step=any class="form-control" name="valor" id="input" style="display:none" required />
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <input type="number" step="0.01" class="form-control" name="valor" id="input" style="display:none" required />
+                </div>
+                <div class="col-md-3" style="padding-left: 0px;">
+                    <select id="Opcion" class="form-control" name="Opcion" style="display:none">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Sumatoria">Sumatoria</option>
+                        <option value="Promedio">Promedio</option>
+                        <option value="Mediana">Mediana</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">Descripcion </label>
+            <label class="control-label col-md-2">Período de tiempo (opcional)</label>
             <div class="col-md-10">
-                <input type="text" name="Descripcion" class="form-control" required />
+                <div class="col-md-4" style="padding-left: 0px;">
+                    <input type="date" class="form-control" name="Inicial" id="FechaInicial" />
+                </div>
+                <div class="col-md-4" style="padding-left: 0px;">
+                    <input type="date" class="form-control" name="Final" id="FechaFinal" />
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="form-group">
+                <label class="control-label col-md-2">Descripcion </label>
+                <div class="col-md-10">
+                    <input type="text" name="Descripcion" class="form-control" required />
+                </div>
             </div>
-        </div>
 
-    </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+
+        </div>
 }
 
 <div>
@@ -77,11 +99,16 @@
 <script>
     function mostrarInput(select) {
         var input = document.getElementById("input");
-        if (select == "Maximo" || select == "Minimo") {
+        var opcion = document.getElementById("Opcion");
+        if (select == "Mayor" || select == "Menor") {
+            input.value = "";
+            input.style.display = "block";
+            opcion.style.display = "block";
+        } else {
+            opcion.style.display = "none";
+            opcion.value = "";
             input.style.display = "none";
             input.value = -1;
-        } else {
-            input.style.display = "block";
         }
     }
 </script>

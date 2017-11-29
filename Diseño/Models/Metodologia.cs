@@ -16,5 +16,12 @@ namespace Diseño.Models
         [Required(ErrorMessage = "El campo Formula es obligatorio.")]
         public string Formula { get; set; }
         public string Descripcion { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<DateTime> FechaInicial { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<DateTime> FechaFinal { get; set; }
     }
 }
