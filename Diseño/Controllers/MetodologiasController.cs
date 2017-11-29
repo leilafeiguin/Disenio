@@ -21,15 +21,21 @@ namespace Diseño.Controllers
         private Nullable<DateTime> FechaFinalGlobal = new Nullable<DateTime>();
         private string opcion; 
 
-
         // GET: Metodologias
         public ActionResult Index()
         {
-            TodasLasClases todas = new TodasLasClases();
-            todas.Metodologias = db.Metodologias.ToList();
-            todas.Empresas = db.Empresas.ToList();
-            todas.Cuentas = db.Cuentas.ToList();
-            return View(todas);
+            if (Session["UserID"] != null)
+            {
+                TodasLasClases todas = new TodasLasClases();
+                todas.Metodologias = db.Metodologias.ToList();
+                todas.Empresas = db.Empresas.ToList();
+                todas.Cuentas = db.Cuentas.ToList();
+                return View(todas);
+            }
+            else
+            {
+                return View("../Login/Index");
+            }
         }
 
         [HttpPost]

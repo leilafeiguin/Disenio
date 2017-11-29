@@ -47,6 +47,13 @@ namespace Diseño.Controllers
             {
                 return RedirectToAction("Index");
             }
-        }  
+        }
+
+        public ActionResult Logout()
+        {
+            Session["UserID"] = null;
+            Session["Username"] = null;
+            return RedirectToAction("Index"); 
+        }
 	}
 }

@@ -31,9 +31,9 @@
                 <ul class="nav navbar-nav navbar-right">
                     @if (Session["UserName"] != null)
                     {
-                        <li><a style="align">@Session["UserName"].ToString()</a></li>
+                        <li><a>@Session["UserName"].ToString()</a></li>
                     }
-                    
+                    <li style ="color:#990000;">@Html.ActionLink("Salir", "Logout", "Login")</li>
                 </ul>
                 
                 

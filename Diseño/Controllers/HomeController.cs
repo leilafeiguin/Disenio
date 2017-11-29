@@ -10,7 +10,15 @@ namespace Diseño.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            
+            if (Session["UserID"] != null)
+            {
+                return View();
+            }
+            else
+            {
+                return View("../Login/Index");
+            }
         }
 
         public ActionResult About()

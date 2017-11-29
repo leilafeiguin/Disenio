@@ -19,10 +19,18 @@ namespace Diseño.Controllers
         // GET: Cuentas1
         public ActionResult Index()
         {
-            TodasLasClases todas = new TodasLasClases();
-            todas.Cuentas = db.Cuentas.ToList();
-            todas.Empresas = db.Empresas.ToList();
-            return View(todas);
+            if (Session["UserID"] != null)
+            {
+                TodasLasClases todas = new TodasLasClases();
+                todas.Cuentas = db.Cuentas.ToList();
+                todas.Empresas = db.Empresas.ToList();
+                return View(todas);
+            }
+            else
+            {
+                return View("../Login/Index");
+            }
+            
         }
 
 
