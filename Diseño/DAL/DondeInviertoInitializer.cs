@@ -10,7 +10,7 @@ namespace Diseño.DAL
     {
         protected override void Seed(DondeInviertoContext context)
         {
-            var cuentas = new List<Cuenta>
+           /* var cuentas = new List<Cuenta>
             {
             new Cuenta{Nombre="Cuenta Septiembre1", Fecha=DateTime.Parse("2005-09-01"), Valor=1000, Empresa=new Empresa{ID=1, Nombre="Feiguin", Fecha=DateTime.Parse("2005-09-04")}},
             new Cuenta{Nombre="Cuenta Septiembre2", Fecha=DateTime.Parse("2005-09-02"), Valor=500, Empresa= new Empresa{ID=2, Nombre="Porracin", Fecha=DateTime.Parse("2005-09-04")}},
@@ -58,7 +58,7 @@ namespace Diseño.DAL
            }
 
             //empresas.ForEach(s => context.Empresas.Add(s));
-            context.SaveChanges();
+            context.SaveChanges();*/
         }
     }
     

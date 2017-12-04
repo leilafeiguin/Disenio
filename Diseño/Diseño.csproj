@@ -182,21 +182,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201711212008478_donde_invierto_migration.cs" />
-    <Compile Include="Migrations\201711212008478_donde_invierto_migration.Designer.cs">
-      <DependentUpon>201711212008478_donde_invierto_migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711221741566_newMigration.cs" />
-    <Compile Include="Migrations\201711221741566_newMigration.Designer.cs">
-      <DependentUpon>201711221741566_newMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711271853437_PrecalculoIndicadores.cs" />
-    <Compile Include="Migrations\201711271853437_PrecalculoIndicadores.Designer.cs">
-      <DependentUpon>201711271853437_PrecalculoIndicadores.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711281242252_inversiones.cs" />
-    <Compile Include="Migrations\201711281242252_inversiones.Designer.cs">
-      <DependentUpon>201711281242252_inversiones.cs</DependentUpon>
+    <Compile Include="Migrations\201712040045463_Initial.cs" />
+    <Compile Include="Migrations\201712040045463_Initial.Designer.cs">
+      <DependentUpon>201712040045463_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -254,6 +242,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\DondeInviertoDDS - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -302,7 +291,6 @@
     <Content Include="Views\Cuentas\Edit.cshtml" />
     <Content Include="Views\Cuentas\Index.cshtml" />
     <Content Include="Views\Indicadores\Create.cshtml" />
-    <Content Include="Delete.cshtml" />
     <Content Include="Views\Indicadores\Details.cshtml" />
     <Content Include="Views\Indicadores\Edit.cshtml" />
     <Content Include="Views\Indicadores\Index.cshtml" />
@@ -335,17 +323,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201711212008478_donde_invierto_migration.resx">
-      <DependentUpon>201711212008478_donde_invierto_migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711221741566_newMigration.resx">
-      <DependentUpon>201711221741566_newMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711271853437_PrecalculoIndicadores.resx">
-      <DependentUpon>201711271853437_PrecalculoIndicadores.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711281242252_inversiones.resx">
-      <DependentUpon>201711281242252_inversiones.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201712040045463_Initial.resx">
+      <DependentUpon>201712040045463_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
