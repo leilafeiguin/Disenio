@@ -76,9 +76,9 @@ namespace Diseño.Controllers
                                 cuenta.Nombre = row.Split(',')[1];
                                 cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
                                 cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
+                                cuenta.PasivoCirculante = Convert.ToDecimal(row.Split(',')[4]);
                                 db.Cuentas.Add(cuenta);
                                 db.SaveChanges();
-                                return RedirectToAction("Index");
                             }
                             else
                             {
@@ -93,11 +93,11 @@ namespace Diseño.Controllers
                                 NewCuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
                                 NewCuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
                                 db.SaveChanges();
-                                return RedirectToAction("Index");
                             }
                         }
                     }
-                }               
+                }
+                return RedirectToAction("Index");
             }
 
             if (EmpresaSeleccionada != "")
