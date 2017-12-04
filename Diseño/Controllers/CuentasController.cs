@@ -69,16 +69,16 @@ namespace Diseño.Controllers
                                 Cuenta cuenta = new Cuenta();
                                 //db.Entry(cuenta).State = EntityState.Modified;
                                 cuenta.Empresa = db.Empresas.Where(e => e.Nombre == NombreEmpresa).FirstOrDefault();
-                                if (cuenta.Empresa == null)
+                                if (cuenta.Empresa != null)
                                 {
-                                    TempData["msgExpresionNoValida"] = "<script>alert('Empresa inexistente');</script>";
+                                    cuenta.Nombre = row.Split(',')[1];
+                                    cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
+                                    cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
+                                    cuenta.PasivoCirculante = Convert.ToDecimal(row.Split(',')[4]);
+                                    db.Cuentas.Add(cuenta);
+                                    db.SaveChanges();
                                 }
-                                cuenta.Nombre = row.Split(',')[1];
-                                cuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
-                                cuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
-                                cuenta.PasivoCirculante = Convert.ToDecimal(row.Split(',')[4]);
-                                db.Cuentas.Add(cuenta);
-                                db.SaveChanges();
+                                TempData["msgExpresionNoValida"] = "<script>alert('Empresa inexistente');</script>";
                             }
                             else
                             {
@@ -86,13 +86,13 @@ namespace Diseño.Controllers
                                 Cuenta NewCuenta = db.Cuentas.Find(OtraCuenta.ID);
                                 //db.Entry(NewCuenta).State = EntityState.Modified;
                                 NewCuenta.Empresa = db.Empresas.Where(e => e.Nombre == NombreEmpresa).FirstOrDefault();
-                                if (NewCuenta.Empresa == null)
+                                if (NewCuenta.Empresa != null)
                                 {
-                                    TempData["msgExpresionNoValida"] = "<script>alert('Empresa inexistente');</script>";
+                                    NewCuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
+                                    NewCuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
+                                    db.SaveChanges();
                                 }
-                                NewCuenta.Fecha = Convert.ToDateTime(row.Split(',')[2]);
-                                NewCuenta.Valor = Convert.ToDecimal(row.Split(',')[3]);
-                                db.SaveChanges();
+                                TempData["msgExpresionNoValida"] = "<script>alert('Empresa inexistente');</script>";
                             }
                         }
                     }
